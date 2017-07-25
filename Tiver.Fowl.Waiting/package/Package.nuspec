@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Tiver.Fowl.Waiting</id>
+    <version>0.1.0</version>
+    <authors>Artyom Silivonchik</authors>
+    <owners>Artyom Silivonchik</owners>
+    <licenseUrl>https://raw.githubusercontent.com/MrHant/tiver-fowl.Waiting/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MrHant/tiver-fowl.Waiting</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>"Wait" implementation. Configurable, loggable.</description>
+    <dependencies />
+  </metadata>
+  <files>
+    <file src="..\bin\Release\Tiver.*" target="lib\net45" />
+  </files>
+</package>
