@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [Serializable]
-    public class WaitTimeoutException : Exception, ISerializable
+    public class WaitTimeoutException : Exception
     {
         public WaitTimeoutException()
         {

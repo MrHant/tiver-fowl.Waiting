@@ -13,6 +13,8 @@
     {
         private static readonly ILog Logger = LogProvider.For<Wait>();
 
+        protected Wait() { }
+
         public static TResult Until<TResult>(Func<TResult> condition, params Type[] ignoredExceptions)
         {
             IWaitConfiguration config = (WaitConfigurationSection) ConfigurationManager.GetSection("waitConfigurationGroup/waitConfiguration");
@@ -53,27 +55,27 @@
                     lastException = ex;
 
                     if (!ignored)
-                        throw;
-                }
-                finally
-                {
-                    // Exit condition - timeout is reached
-                    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                    if (elapsedMilliseconds > timeout)
                     {
-                        using (LogProvider.OpenMappedContext("LogType", "Wait"))
-                        {
-                            Logger.DebugFormat("Waiting failed after {ms}ms", elapsedMilliseconds);
-                        }
-                        stopwatch.Stop();
-                        throw new WaitTimeoutException(
-                            $"Wait timeout reached after {elapsedMilliseconds} milliseconds waiting.",
-                            lastException);
+                        throw;
                     }
-
-                    // No exit conditions met - Sleep for polling interval
-                    Thread.Sleep(pollingInterval);
                 }
+
+                // Exit condition - timeout is reached
+                var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                if (elapsedMilliseconds > timeout)
+                {
+                    using (LogProvider.OpenMappedContext("LogType", "Wait"))
+                    {
+                        Logger.DebugFormat("Waiting failed after {ms}ms", elapsedMilliseconds);
+                    }
+                    stopwatch.Stop();
+                    throw new WaitTimeoutException(
+                        $"Wait timeout reached after {elapsedMilliseconds} milliseconds waiting.",
+                        lastException);
+                }
+
+                // No exit conditions met - Sleep for polling interval
+                Thread.Sleep(pollingInterval);
             }
         }
     }

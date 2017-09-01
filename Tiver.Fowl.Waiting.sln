@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiver.Fowl.Waiting", "Tiver.Fowl.Waiting\Tiver.Fowl.Waiting.csproj", "{80DF3569-CECF-408D-B511-186373D96D25}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{28598FD8-E694-479E-9B61-49051BF8F200}"
+	ProjectSection(SolutionItems) = preProject
+		Tiver.Fowl.Waiting\package\Package.nuspec = Tiver.Fowl.Waiting\package\Package.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

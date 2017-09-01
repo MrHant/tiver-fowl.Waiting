@@ -4,12 +4,11 @@
     {
         public WaitConfiguration(int timeout, int pollingInterval)
         {
-            this.Timeout = timeout;
-            this.PollingInterval = pollingInterval;
+            Timeout = timeout;
+            PollingInterval = pollingInterval;
         }
 
-        public int Timeout { get; private set; }
-
-        public int PollingInterval { get; private set; }
+        public int Timeout { get; }
+        public int PollingInterval { get; }
     }
 }

@@ -4,48 +4,18 @@
 
     public class WaitConfigurationSection : ConfigurationSection, IWaitConfiguration
     {
+        [ConfigurationProperty("timeout", DefaultValue = 1000, IsRequired = true)]
         public int Timeout
         {
-            get
-            {
-                return this.TimeoutElement;
-            }
-        }
-
-        public int PollingInterval
-        {
-            get
-            {
-                return this.PollingIntervalElement;
-            }
-        }
-
-        [ConfigurationProperty("timeout", DefaultValue = 1000, IsRequired = true)]
-        private int TimeoutElement
-        {
-            get
-            {
-                return (int)this["timeout"];
-            }
-
-            set
-            {
-                this["timeout"] = value;
-            }
+            get => (int)this["timeout"];
+            set => this["timeout"] = value;
         }
 
         [ConfigurationProperty("pollingInterval", DefaultValue = 250, IsRequired = true)]
-        private int PollingIntervalElement
+        public int PollingInterval
         {
-            get
-            {
-                return (int)this["pollingInterval"];
-            }
-
-            set
-            {
-                this["pollingInterval"] = value;
-            }
+            get => (int)this["pollingInterval"];
+            set => this["pollingInterval"] = value;
         }
     }
 }
