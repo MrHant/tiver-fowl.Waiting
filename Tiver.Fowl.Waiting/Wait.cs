@@ -34,6 +34,9 @@
 
             while (true)
             {
+                // Exit condition - timeout is reached
+                CheckTimeoutReached<TResult>(timeout, stopwatch, lastException);
+
                 try
                 {
                     var result = condition.Invoke();
@@ -61,21 +64,26 @@
                 }
 
                 // Exit condition - timeout is reached
-                var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                if (elapsedMilliseconds > timeout)
-                {
-                    using (LogProvider.OpenMappedContext("LogType", "Wait"))
-                    {
-                        Logger.DebugFormat("Waiting failed after {ms}ms", elapsedMilliseconds);
-                    }
-                    stopwatch.Stop();
-                    throw new WaitTimeoutException(
-                        $"Wait timeout reached after {elapsedMilliseconds} milliseconds waiting.",
-                        lastException);
-                }
+                CheckTimeoutReached<TResult>(timeout, stopwatch, lastException);
 
                 // No exit conditions met - Sleep for polling interval
                 Thread.Sleep(pollingInterval);
+            }
+        }
+
+        private static void CheckTimeoutReached<TResult>(int timeout, Stopwatch stopwatch, Exception lastException)
+        {
+            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            if (elapsedMilliseconds > timeout)
+            {
+                using (LogProvider.OpenMappedContext("LogType", "Wait"))
+                {
+                    Logger.DebugFormat("Waiting failed after {ms}ms", elapsedMilliseconds);
+                }
+                stopwatch.Stop();
+                throw new WaitTimeoutException(
+                    $"Wait timeout reached after {elapsedMilliseconds} milliseconds waiting.",
+                    lastException);
             }
         }
     }
