@@ -5,6 +5,7 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using Configuration;
     using Exceptions;
     using Logging;
@@ -39,10 +40,20 @@
 
                 try
                 {
-                    var result = condition.Invoke();
+                    TResult result;
+                    try
+                    {
+                        var task = Task.Factory.StartNew(condition.Invoke);
+                        task.Wait(TimeSpan.FromMilliseconds(timeout));
+                        result = task.IsCompleted ? task.Result : default(TResult);
+                    }
+                    catch (AggregateException ae)
+                    {
+                        throw ae.InnerExceptions[0];
+                    }
 
                     // Exit condition - some non-default result
-                    if (!result.Equals(default(TResult)))
+                    if (result != null && !result.Equals(default(TResult)))
                     {
                         using (LogProvider.OpenMappedContext("LogType", "Wait"))
                         {

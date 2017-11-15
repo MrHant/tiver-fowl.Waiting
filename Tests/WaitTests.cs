@@ -1,6 +1,8 @@
 ﻿namespace Tests
 {
+    using System;
     using System.Diagnostics;
+    using System.Threading;
     using Moq;
     using NUnit.Framework;
     using Tiver.Fowl.Waiting;
@@ -139,6 +141,32 @@
             Assert.IsTrue(wait);
             var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
             Assert.IsTrue(passedSeconds < 1000);
+        }
+
+        [Test]
+        public void TotalTimeOfTooLongConditionWait()
+        {
+            var success = false;
+            var stopwatch = new Stopwatch();
+            var config = new WaitConfiguration(5000, 250);
+            stopwatch.Start();
+            try
+            {
+                Wait.Until(() =>
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    return true;
+                }, config);
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            stopwatch.Stop();
+            Assert.IsTrue(success);
+            var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
+            Assert.IsTrue(passedSeconds > 5000 && passedSeconds - 5000 < 1000);
         }
     }
 }
