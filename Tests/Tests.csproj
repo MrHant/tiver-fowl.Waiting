@@ -52,6 +52,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigTests.cs" />
     <Compile Include="ExceptionsTests.cs" />
     <Compile Include="ICounter.cs" />
     <Compile Include="WaitTests.cs" />
@@ -59,7 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tiver.Fowl.Waiting\Tiver.Fowl.Waiting.csproj">
