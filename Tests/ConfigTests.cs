@@ -1,7 +1,6 @@
 ﻿namespace Tests
 {
     using Moq;
-    using Newtonsoft.Json;
     using NUnit.Framework;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
@@ -10,7 +9,7 @@
     public class ConfigTests
     {
         [Test]
-        public void WaitUntilSuccessEmptyConfigurationSection()
+        public static void WaitUntilSuccessEmptyConfigurationSection()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -22,7 +21,7 @@
         }
 
         [Test]
-        public void DefaultConfigurationSectionValues()
+        public static void DefaultConfigurationSectionValues()
         {
             var config = new WaitConfigurationSection();
             Assert.AreEqual(1000, config.Timeout);

@@ -1,6 +1,7 @@
 ﻿namespace Tiver.Fowl.Waiting
 {
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics;
     using System.Linq;
@@ -36,7 +37,7 @@
             while (true)
             {
                 // Exit condition - timeout is reached
-                CheckTimeoutReached<TResult>(timeout, stopwatch, lastException);
+                CheckTimeoutReached(timeout, stopwatch, lastException);
 
                 try
                 {
@@ -53,7 +54,7 @@
                     }
 
                     // Exit condition - some non-default result
-                    if (result != null && !result.Equals(default(TResult)))
+                    if (!EqualityComparer<TResult>.Default.Equals(result, default(TResult)))
                     {
                         using (LogProvider.OpenMappedContext("LogType", "Wait"))
                         {
@@ -75,14 +76,14 @@
                 }
 
                 // Exit condition - timeout is reached
-                CheckTimeoutReached<TResult>(timeout, stopwatch, lastException);
+                CheckTimeoutReached(timeout, stopwatch, lastException);
 
                 // No exit conditions met - Sleep for polling interval
                 Thread.Sleep(pollingInterval);
             }
         }
 
-        private static void CheckTimeoutReached<TResult>(int timeout, Stopwatch stopwatch, Exception lastException)
+        private static void CheckTimeoutReached(int timeout, Stopwatch stopwatch, Exception lastException)
         {
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             if (elapsedMilliseconds > timeout)

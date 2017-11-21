@@ -10,7 +10,7 @@
     public class ExceptionsTests
     {
         [Test]
-        public void ExceptionThrown()
+        public static void ExceptionThrown()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
@@ -30,7 +30,7 @@
         }
 
         [Test]
-        public void ExceptionIgnoredAndTimeoutIsThrown()
+        public static void ExceptionIgnoredAndTimeoutIsThrown()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
@@ -50,7 +50,7 @@
         }
 
         [Test]
-        public void ExceptionIgnoredAndSuccess()
+        public static void ExceptionIgnoredAndSuccess()
         {
             var mock = new Mock<ICounter>();
             mock.SetupSequence(foo => foo.GetCount())
@@ -65,6 +65,5 @@
             Assert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(5));
         }
-
     }
 }
