@@ -115,6 +115,6 @@ Task("PushNuGetPackage")
 });
 
 Task("Default")
-    .IsDependentOn("Build");
+    .IsDependentOn("PushNuGetPackage");
 
 RunTarget(target);
