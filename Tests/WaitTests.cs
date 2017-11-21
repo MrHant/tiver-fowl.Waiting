@@ -10,7 +10,7 @@
     using Tiver.Fowl.Waiting.Exceptions;
 
     [TestFixture, Parallelizable(ParallelScope.All)]
-    public class WaitTests
+    public static class WaitTests
     {
         [Test]
         public static void WaitUntilOneCycleSuccess()

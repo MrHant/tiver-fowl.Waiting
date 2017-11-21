@@ -7,7 +7,7 @@
     using Tiver.Fowl.Waiting.Exceptions;
 
     [TestFixture, Parallelizable(ParallelScope.All)]
-    public class ExceptionsTests
+    public static class ExceptionsTests
     {
         [Test]
         public static void ExceptionThrown()

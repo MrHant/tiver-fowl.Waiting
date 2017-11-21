@@ -6,7 +6,7 @@
     using Tiver.Fowl.Waiting.Configuration;
 
     [TestFixture, Parallelizable(ParallelScope.All)]
-    public class ConfigTests
+    public static class ConfigTests
     {
         [Test]
         public static void WaitUntilSuccessEmptyConfigurationSection()
