@@ -43,19 +43,20 @@
             var stopwatch = Stopwatch.StartNew();
             Exception lastException = null;
             var wasExtended = false;
+            var currentTimeout = timeout;
 
             while (true)
             {
                 // Extend timeout if needed
-                if (extendOnTimeout && !wasExtended && NeedToBeExtended(timeout, stopwatch))
+                if (extendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
                 {
-                    timeout = extendedTimeout;
+                    currentTimeout = extendedTimeout;
                     wasExtended = true;
                     WarnTimeoutWasExtended();
                 }
 
                 // Exit condition - timeout is reached
-                CheckTimeoutReached(timeout, stopwatch, lastException, wasExtended);
+                CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
 
                 try
                 {
@@ -63,7 +64,7 @@
                     try
                     {
                         var task = Task.Factory.StartNew(condition.Invoke);
-                        task.Wait(TimeSpan.FromMilliseconds(timeout));
+                        task.Wait(TimeSpan.FromMilliseconds(currentTimeout));
                         result = task.IsCompleted ? task.Result : default(TResult);
                     }
                     catch (AggregateException ae)
@@ -94,14 +95,15 @@
                 }
 
                 // Extend timeout if needed
-                if (extendOnTimeout && !wasExtended && NeedToBeExtended(timeout, stopwatch))
+                if (extendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
                 {
-                    timeout = extendedTimeout;
+                    currentTimeout = extendedTimeout;
                     wasExtended = true;
-                    WarnTimeoutWasExtended();                }
+                    WarnTimeoutWasExtended();
+                }
 
                 // Exit condition - timeout is reached
-                CheckTimeoutReached(timeout, stopwatch, lastException, wasExtended);
+                CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
 
                 // No exit conditions met - Sleep for polling interval
                 Thread.Sleep(pollingInterval);

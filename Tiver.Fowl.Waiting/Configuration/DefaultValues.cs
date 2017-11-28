@@ -1,8 +1,8 @@
 ﻿namespace Tiver.Fowl.Waiting.Configuration
 {
-    public class DefaultValues
+    internal static class DefaultValues
     {
-        public const int Timeout = 1000;
-        public const int PollingInterval = 250;
+        internal const int Timeout = 1000;
+        internal const int PollingInterval = 250;
     }
 }
