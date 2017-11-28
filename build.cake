@@ -2,9 +2,7 @@ const string project = "Tiver.Fowl.Waiting";
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var solutionFilename = Argument("solutionFilename", project + ".sln");
-var testsProject = Argument("testsProject", "Tests");
-var testsFile = Argument("testsFile", "Tests.dll");
-var projects = Argument("projects", project + ";" + "Tests");
+var projects = Argument("projects", project + ";Tests;TestsMsTest");
 
 var projectDirectories = projects.Split(';');
 
@@ -12,6 +10,10 @@ DirectoryPath vsLatest  = VSWhereLatest();
 var msBuildPath = (vsLatest==null)
                             ? null
                             : vsLatest.CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+
+var msTestPath = (vsLatest==null)
+                            ? null
+                            : vsLatest.CombineWithFilePath("./Common7/IDE/MSTest.exe");
 
 GitVersion versionInfo;
 string version;
@@ -66,14 +68,29 @@ Task("Build")
     });
 });
 
-Task("RunUnitTests")
+Task("RunUnitTestsNUnit")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    NUnit("./" + testsProject + "/bin/" + configuration + "/" + testsFile, new NUnitSettings {
+    NUnit("./Tests/bin/" + configuration + "/Tests.dll", new NUnitSettings {
         ToolPath = "./tools/NUnit.ConsoleRunner/tools/nunit3-console.exe"
     });
 });
+
+Task("RunUnitTestsMSTest")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+      var paths = new List<FilePath>() { "./TestsMsTest/bin/" + configuration + "/TestsMsTest.dll" };
+      MSTest(paths, new MSTestSettings {
+          ToolPath = msTestPath
+      });
+});
+
+
+Task("RunUnitTests")
+    .IsDependentOn("RunUnitTestsNUnit")
+    .IsDependentOn("RunUnitTestsMSTest");
 
 Task("Version")
     .Does(() =>

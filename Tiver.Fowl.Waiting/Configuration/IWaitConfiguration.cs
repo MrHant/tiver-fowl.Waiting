@@ -5,5 +5,9 @@
         int Timeout { get; }
 
         int PollingInterval { get; }
+
+        bool ExtendOnTimeout { get; }
+
+        int ExtendedTimeout { get; }
     }
 }

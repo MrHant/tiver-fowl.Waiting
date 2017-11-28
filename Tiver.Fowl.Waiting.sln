@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{19E0
 		package\Package.nuspec = package\Package.nuspec
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsMsTest", "TestsMsTest\TestsMsTest.csproj", "{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

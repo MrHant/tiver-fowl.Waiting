@@ -4,11 +4,25 @@
 
 ## Configurable
 
-Can be configured via .config files like
+Can be configured via `App.config` file in following way:
 
-    <waitConfiguration
-        timeout="5000"
-        pollingInterval="250" />
+    <!-- Configuration section-handler declaration area. -->
+    <configSections>
+        <sectionGroup name="waitConfigurationGroup">
+            <section
+                name="waitConfiguration"
+                type="Tiver.Fowl.Waiting.Configuration.WaitConfigurationSection, Tiver.Fowl.Waiting"
+                allowLocation="true"
+                allowDefinition="Everywhere" />
+        </sectionGroup>
+    </configSections>
+
+    <!-- Configuration section settings area. -->
+    <waitConfigurationGroup>
+        <waitConfiguration
+            timeout="1000"
+            pollingInterval="250" />
+    </waitConfigurationGroup>
 
 
 ## Loggable
