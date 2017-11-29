@@ -26,6 +26,8 @@
             var config = new WaitConfigurationSection();
             Assert.AreEqual(1000, config.Timeout);
             Assert.AreEqual(250, config.PollingInterval);
+            Assert.AreEqual(false, config.ExtendOnTimeout);
+            Assert.AreEqual(5000, config.ExtendedTimeout);
         }
     }
 }
