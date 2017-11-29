@@ -42,4 +42,21 @@ You can transparently use any of following loggers:  NLog, Log4Net, EntLib Loggi
 
 Throws `Tiver.Fowl.Waiting.Exceptions.WaitTimeoutException` on timeout
  
- 
+## Samples
+
+Simple Wait (use `App.config` values or defaults)
+
+    var result = Wait.Until(() => 2 + 2);
+    Assert.AreEqual(4, result);
+
+Simple Wait with specific config
+
+    var config = new WaitConfiguration(1000, 250);
+    var result = Wait.Until(() => 2 + 2, config);
+    Assert.AreEqual(4, result);
+
+Extensible Wait
+
+    var config = new WaitConfiguration(1000, 250, 5000);
+    var result = Wait.Until(() => 2 + 2, config);
+    Assert.AreEqual(4, result);
