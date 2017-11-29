@@ -10,10 +10,10 @@
     using Tiver.Fowl.Waiting.Exceptions;
 
     [TestFixture, Parallelizable(ParallelScope.All)]
-    public class WaitTests
+    public static class WaitTests
     {
         [Test]
-        public void WaitUntilOneCycleSuccess()
+        public static void WaitUntilOneCycleSuccess()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -25,7 +25,7 @@
         }
 
         [Test]
-        public void WaitUntilFiveCyclesSuccess()
+        public static void WaitUntilFiveCyclesSuccess()
         {
             var mock = new Mock<ICounter>();
             var calls = 1;
@@ -40,7 +40,7 @@
         }
 
         [Test]
-        public void WaitUntilFailure()
+        public static void WaitUntilFailure()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -60,7 +60,7 @@
         }
 
         [Test]
-        public void AboutTenTimesPolled()
+        public static void AboutTenTimesPolled()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -81,7 +81,7 @@
         }
 
         [Test]
-        public void OneTimePolled()
+        public static void OneTimePolled()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -102,7 +102,7 @@
         }
 
         [Test]
-        public void TotalTimeOfFailingWait()
+        public static void TotalTimeOfFailingWait()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -127,7 +127,7 @@
         }
 
         [Test]
-        public void TotalTimeOfSuccessfulWait()
+        public static void TotalTimeOfSuccessfulWait()
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(10);
@@ -144,7 +144,7 @@
         }
 
         [Test]
-        public void TotalTimeOfTooLongConditionWait()
+        public static void TotalTimeOfTooLongConditionWait()
         {
             var success = false;
             var stopwatch = new Stopwatch();

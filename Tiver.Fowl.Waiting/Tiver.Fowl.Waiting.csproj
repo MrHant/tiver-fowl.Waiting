@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="Configuration\DefaultValues.cs" />
     <Compile Include="Configuration\IWaitConfiguration.cs" />
     <Compile Include="Configuration\WaitConfiguration.cs" />
     <Compile Include="Configuration\WaitConfigurationSection.cs" />

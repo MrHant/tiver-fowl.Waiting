@@ -5,12 +5,19 @@ VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiver.Fowl.Waiting", "Tiver.Fowl.Waiting\Tiver.Fowl.Waiting.csproj", "{80DF3569-CECF-408D-B511-186373D96D25}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{28598FD8-E694-479E-9B61-49051BF8F200}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BB44081F-641E-4335-9D99-C16A51D6715A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23173423-C009-4DE3-AC87-0D8634742572}"
 	ProjectSection(SolutionItems) = preProject
-		Tiver.Fowl.Waiting\package\Package.nuspec = Tiver.Fowl.Waiting\package\Package.nuspec
+		build.cake = build.cake
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BB44081F-641E-4335-9D99-C16A51D6715A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{19E0180F-2356-4E21-A894-A2DBB6846B56}"
+	ProjectSection(SolutionItems) = preProject
+		package\Package.nuspec = package\Package.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsMsTest", "TestsMsTest\TestsMsTest.csproj", "{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +33,10 @@ Global
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB44081F-641E-4335-9D99-C16A51D6715A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD4A64FA-1E26-4379-BD33-2C0D61E89E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
