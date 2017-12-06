@@ -27,14 +27,7 @@
 
         public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration, params Type[] ignoredExceptions)
         {
-            return configuration.ExtendOnTimeout 
-                ? Until(condition, configuration.Timeout, configuration.PollingInterval, configuration.ExtendOnTimeout, configuration.ExtendedTimeout, ignoredExceptions) 
-                : Until(condition, configuration.Timeout, configuration.PollingInterval, ignoredExceptions);
-        }
-
-        private static TResult Until<TResult>(Func<TResult> condition, int timeout, int pollingInterval, params Type[] ignoredExceptions)
-        {
-            return Until(condition, timeout, pollingInterval, false, 0, ignoredExceptions);
+            return Until(condition, configuration.Timeout, configuration.PollingInterval, configuration.ExtendOnTimeout, configuration.ExtendedTimeout, ignoredExceptions);
         }
 
         private static TResult Until<TResult>(Func<TResult> condition, int timeout, int pollingInterval, bool extendOnTimeout, int extendedTimeout, params Type[] ignoredExceptions)
