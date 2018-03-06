@@ -17,33 +17,28 @@
 
         protected Wait() { }
 
-        public static TResult Until<TResult>(Func<TResult> condition, params Type[] ignoredExceptions)
+        public static TResult Until<TResult>(Func<TResult> condition)
         {
             IWaitConfiguration config = (WaitConfigurationSection) ConfigurationManager.GetSection("waitConfigurationGroup/waitConfiguration") 
                                         ?? (IWaitConfiguration) new WaitConfiguration();
 
-            return Until(condition, config, ignoredExceptions);
+            return Until(condition, config);
         }
 
-        public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration, params Type[] ignoredExceptions)
-        {
-            return Until(condition, configuration.Timeout, configuration.PollingInterval, configuration.ExtendOnTimeout, configuration.ExtendedTimeout, ignoredExceptions);
-        }
-
-        private static TResult Until<TResult>(Func<TResult> condition, int timeout, int pollingInterval, bool extendOnTimeout, int extendedTimeout, params Type[] ignoredExceptions)
+        public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration)
         {
             // Start continious checking
             var stopwatch = Stopwatch.StartNew();
             Exception lastException = null;
             var wasExtended = false;
-            var currentTimeout = timeout;
+            var currentTimeout = configuration.Timeout;
 
             while (true)
             {
                 // Extend timeout if needed
-                if (extendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
+                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
                 {
-                    currentTimeout = extendedTimeout;
+                    currentTimeout = configuration.ExtendedTimeout;
                     wasExtended = true;
                     WarnTimeoutWasExtended();
                 }
@@ -78,7 +73,7 @@
                 }
                 catch (Exception ex)
                 {
-                    var ignored = ignoredExceptions.Any(type => type.IsInstanceOfType(ex));
+                    var ignored = configuration.IgnoredExceptions.Any(type => type.IsInstanceOfType(ex));
                     lastException = ex;
 
                     if (!ignored)
@@ -88,9 +83,9 @@
                 }
 
                 // Extend timeout if needed
-                if (extendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
+                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
                 {
-                    currentTimeout = extendedTimeout;
+                    currentTimeout = configuration.ExtendedTimeout;
                     wasExtended = true;
                     WarnTimeoutWasExtended();
                 }
@@ -99,7 +94,7 @@
                 CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
 
                 // No exit conditions met - Sleep for polling interval
-                Thread.Sleep(pollingInterval);
+                Thread.Sleep(configuration.PollingInterval);
             }
         }
 

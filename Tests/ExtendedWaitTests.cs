@@ -1,5 +1,6 @@
 ﻿namespace Tests
 {
+    using System;
     using System.Diagnostics;
     using Moq;
     using NUnit.Framework;
@@ -49,12 +50,44 @@
             Assert.IsTrue(passedSeconds > 10000 && passedSeconds - 10000 < 1000);
         }
 
+        public static void ExceptionIgnoredViaConfigurationMethod()
+        {
+            var mock = new Mock<ICounter>();
+            mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
+
+            var success = false;
+            try
+            {
+                Wait.Until(
+                    () => mock.Object.GetCount() == 10,
+                    new WaitConfiguration(1000, 250, 5000, typeof(ArgumentException)));
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            Assert.IsTrue(success);
+            mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
+        }
+
         [Test]
         public static void TotalTimeOfFailingWait()
         {
             ITestResult result = TestBuilder.RunTestCase(
                 typeof(ExtendedWaitTests),
                 "TotalTimeOfFailingWaitMethod");
+
+            Assert.AreEqual(ResultState.Warning, result.ResultState);
+            Assert.AreEqual("Timeout for Wait was extended.", result.Message);
+        }
+
+        [Test]
+        public static void ExceptionIgnoredViaConfiguration()
+        {
+            ITestResult result = TestBuilder.RunTestCase(
+                typeof(ExtendedWaitTests),
+                "ExceptionIgnoredViaConfigurationMethod");
 
             Assert.AreEqual(ResultState.Warning, result.ResultState);
             Assert.AreEqual("Timeout for Wait was extended.", result.Message);
