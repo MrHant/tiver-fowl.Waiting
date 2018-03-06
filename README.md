@@ -1,6 +1,9 @@
 # tiver-fowl.Waiting  [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/MrHant/tiver-fowl/master/LICENSE)
 
-"Wait" implementation
+"Wait" implementation.
+Allows to process given condition until timeout is reached.
+Overall timeout and polling interval are configurable.
+Appearing exceptions can be ignored so processing of condition continues.
 
 ## Branch status
 
@@ -32,16 +35,41 @@ Can be configured via `App.config` file in following way:
     </waitConfigurationGroup>
 
 
+Full configuration can look like following:
+
+    <waitConfiguration
+        timeout="5000"
+        pollingInterval="250"
+        extendOnTimeout="true"
+        extendedTimeout="15000" >
+        <IgnoredExceptions>
+            <Exception type="System.ArgumentException" />
+            <Exception type="NUnit.Framework.AssertionException, NUnit.Framework" />
+        </IgnoredExceptions>
+    </waitConfiguration>
+
 ## Loggable
 
 Produces debug log. Doesn't force any specific logging library. (uses LibLog v4.2.6)
 
 You can transparently use any of following loggers:  NLog, Log4Net, EntLib Logging, Serilog and Loupe.
 
-## Exception handling
+## Timeout Exception
 
 Throws `Tiver.Fowl.Waiting.Exceptions.WaitTimeoutException` on timeout
- 
+
+## Ignoring  Exceptions
+
+You can ignore exceptions during Wait
+
+    // Following code throws System.DivideByZeroException
+    var zero = 0;
+    var wait = Wait.Until(() => 2 / zero);
+
+    // Following code continue execution before timeout occurs
+    var zero = 0;
+    var wait = Wait.Until(() => 2 / zero, new WaitConfiguration(typeof(DivideByZeroException)));
+
 ## Samples
 
 Simple Wait (use `App.config` values or defaults)

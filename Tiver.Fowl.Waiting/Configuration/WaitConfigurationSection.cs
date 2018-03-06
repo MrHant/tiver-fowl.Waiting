@@ -1,5 +1,7 @@
 ﻿namespace Tiver.Fowl.Waiting.Configuration
 {
+    using System;
+    using System.Collections.Generic;
     using System.Configuration;
 
     public class WaitConfigurationSection : ConfigurationSection, IWaitConfiguration
@@ -30,6 +32,26 @@
         {
             get => (int)this["extendedTimeout"];
             set => this["extendedTimeout"] = value;
+        }
+
+        [ConfigurationProperty("IgnoredExceptions", IsDefaultCollection = true)]
+        public IgnoredExceptionsCollection IgnoredExceptionsCollection
+        {
+            get => (IgnoredExceptionsCollection)this["IgnoredExceptions"];
+            set => this["IgnoredExceptions"] = value;
+        }
+
+        public Type[] IgnoredExceptions
+        {
+            get
+            {
+                var result = new List<Type>();
+                foreach (ExceptionConfigElement element in IgnoredExceptionsCollection)
+                {
+                    result.Add(element.Type);
+                }
+                return result.ToArray();
+            }
         }
     }
 }
