@@ -37,7 +37,7 @@ Can be configured via `App.config` file in following way:
 
 Full configuration can look like following:
 
-    <fullWaitConfiguration
+    <waitConfiguration
         timeout="5000"
         pollingInterval="250"
         extendOnTimeout="true"
@@ -46,7 +46,7 @@ Full configuration can look like following:
             <Exception type="System.ArgumentException" />
             <Exception type="NUnit.Framework.AssertionException, NUnit.Framework" />
         </IgnoredExceptions>
-    </fullWaitConfiguration>
+    </waitConfiguration>
 
 ## Loggable
 
