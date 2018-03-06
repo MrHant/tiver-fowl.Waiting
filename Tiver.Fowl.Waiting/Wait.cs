@@ -17,17 +17,17 @@
 
         protected Wait() { }
 
-        public static TResult Until<TResult>(Func<TResult> condition, params Type[] ignoredExceptions)
+        public static TResult Until<TResult>(Func<TResult> condition)
         {
             IWaitConfiguration config = (WaitConfigurationSection) ConfigurationManager.GetSection("waitConfigurationGroup/waitConfiguration") 
                                         ?? (IWaitConfiguration) new WaitConfiguration();
 
-            return Until(condition, config, ignoredExceptions);
+            return Until(condition, config);
         }
 
-        public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration, params Type[] ignoredExceptions)
+        public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration)
         {
-            return Until(condition, configuration.Timeout, configuration.PollingInterval, configuration.ExtendOnTimeout, configuration.ExtendedTimeout, ignoredExceptions);
+            return Until(condition, configuration.Timeout, configuration.PollingInterval, configuration.ExtendOnTimeout, configuration.ExtendedTimeout, configuration.IgnoredExceptions);
         }
 
         private static TResult Until<TResult>(Func<TResult> condition, int timeout, int pollingInterval, bool extendOnTimeout, int extendedTimeout, params Type[] ignoredExceptions)
