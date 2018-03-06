@@ -36,6 +36,7 @@ Can be configured via `App.config` file in following way:
 
 
 Full configuration can look like following:
+
     <fullWaitConfiguration
         timeout="5000"
         pollingInterval="250"
