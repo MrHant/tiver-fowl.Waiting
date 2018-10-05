@@ -1,4 +1,5 @@
 # tiver-fowl.Waiting  [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/MrHant/tiver-fowl/master/LICENSE)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting?ref=badge_shield)
 
 "Wait" implementation.
 Allows to process given condition until timeout is reached.
@@ -88,3 +89,7 @@ Extensible Wait
     var config = new WaitConfiguration(1000, 250, 5000);
     var result = Wait.Until(() => 2 + 2, config);
     Assert.AreEqual(4, result);
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting?ref=badge_large)
