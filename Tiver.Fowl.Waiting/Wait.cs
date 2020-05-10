@@ -12,11 +12,14 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
 
-    public class Wait
+    public static class Wait
     {
-        private static readonly ILogger Logger = new Logger<Wait>(new NullLoggerFactory());
+        private static ILogger _logger = NullLogger.Instance;
 
-        protected Wait() { }
+        public static void SetLogger(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public static TResult Until<TResult>(Func<TResult> condition)
         {
@@ -68,9 +71,9 @@
                     // Exit condition - some non-default result
                     if (!EqualityComparer<TResult>.Default.Equals(result, default(TResult)))
                     {
-                        using (Logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
+                        using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                         {
-                            Logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
+                            _logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
                         }
 
                         return result;
@@ -108,9 +111,9 @@
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             if (IsTimeoutReached(timeout, stopwatch))
             {
-                using (Logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
+                using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                 {
-                    Logger.Log(LogLevel.Debug, "Waiting failed after {ms}ms", elapsedMilliseconds);
+                    _logger.Log(LogLevel.Debug, "Waiting failed after {ms}ms", elapsedMilliseconds);
                 }
                 stopwatch.Stop();
 

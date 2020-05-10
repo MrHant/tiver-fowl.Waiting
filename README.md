@@ -48,6 +48,8 @@ Full configuration can look like following:
 
 Produces debug log. Uses `Microsoft.Extensions.Logging.Abstractions`
 
+Logger instance can be configured using static method: `Wait.SetLogger(loggerInstance)`
+
 ## Timeout Exception
 
 Throws `Tiver.Fowl.Waiting.Exceptions.WaitTimeoutException` on timeout
