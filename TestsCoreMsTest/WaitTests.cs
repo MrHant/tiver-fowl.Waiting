@@ -1,4 +1,4 @@
-﻿namespace TestsMsTest
+﻿namespace TestsCoreMsTest
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;

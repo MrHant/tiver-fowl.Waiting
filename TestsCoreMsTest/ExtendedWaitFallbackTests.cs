@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace TestsMsTest
+﻿namespace TestsCoreMsTest
 {
     using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;

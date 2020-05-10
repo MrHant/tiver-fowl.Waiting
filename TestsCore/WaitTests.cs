@@ -1,4 +1,4 @@
-﻿namespace Tests
+﻿namespace TestsCore
 {
     using System;
     using System.Diagnostics;
@@ -8,6 +8,7 @@
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
+    using Range = Moq.Range;
 
     [TestFixture, Parallelizable(ParallelScope.All)]
     public static class WaitTests

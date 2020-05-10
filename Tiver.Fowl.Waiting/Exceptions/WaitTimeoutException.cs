@@ -1,7 +1,6 @@
 ﻿namespace Tiver.Fowl.Waiting.Exceptions
 {
     using System;
-    using System.Runtime.Serialization;
 
     [Serializable]
     public class WaitTimeoutException : Exception

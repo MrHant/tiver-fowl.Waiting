@@ -1,4 +1,4 @@
-﻿namespace TestsMsTest
+﻿namespace TestsCoreMsTest
 {
     public interface ICounter
     {

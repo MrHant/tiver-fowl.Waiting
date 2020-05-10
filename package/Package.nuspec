@@ -5,13 +5,15 @@
     <version>0.1.2</version>
     <authors>Artyom Silivonchik</authors>
     <owners>Artyom Silivonchik</owners>
-    <licenseUrl>https://raw.githubusercontent.com/MrHant/tiver-fowl.Waiting/master/LICENSE</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/MrHant/tiver-fowl.Waiting</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>"Wait" implementation. Configurable, loggable.</description>
-    <dependencies />
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\Tiver.Fowl.Waiting\bin\Release\Tiver.*" target="lib\net45" />
+    <file src="..\Tiver.Fowl.Waiting\bin\Release\netcoreapp3.1\Tiver.*" target="lib\netcoreapp3.1" />
   </files>
 </package>

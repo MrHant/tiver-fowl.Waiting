@@ -1,0 +1,19 @@
+{
+  "Tiver.Fowl.Waiting": {
+    "Timeout": 5000
+  },
+  "Tiver.Fowl.Waiting_minimumWaitConfiguration": {
+    "Timeout": 3000,
+    "PollingInterval": 1000
+  },
+  "Tiver.Fowl.Waiting_fullWaitConfiguration": {
+    "Timeout": 3000,
+    "PollingInterval": 1000,
+    "ExtendOnTimeout": true,
+    "ExtendedTimeout": 7000,
+    "IgnoredExceptionsTypeNames": [
+      "System.ArgumentException",
+      "NUnit.Framework.AssertionException, NUnit.Framework"
+    ]
+  }
+}

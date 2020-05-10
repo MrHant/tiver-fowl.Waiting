@@ -1,21 +1,20 @@
 ﻿namespace Tiver.Fowl.Waiting.Configuration
 {
     using System;
+    using System.Linq;
 
-    public class WaitConfiguration : IWaitConfiguration
+    public class WaitConfiguration 
     {
         public WaitConfiguration(params Type[] ignoredExceptions)
         {
-            Timeout = DefaultValues.Timeout;
-            PollingInterval = DefaultValues.PollingInterval;
-            IgnoredExceptions = ignoredExceptions;
+            IgnoredExceptionsTypeNames = ignoredExceptions.Select(type => type.AssemblyQualifiedName).ToArray();
         }
 
         public WaitConfiguration(int timeout, int pollingInterval, params Type[] ignoredExceptions)
         {
             Timeout = timeout;
             PollingInterval = pollingInterval;
-            IgnoredExceptions = ignoredExceptions;
+            IgnoredExceptionsTypeNames = ignoredExceptions.Select(type => type.AssemblyQualifiedName).ToArray();
         }
 
         public WaitConfiguration(int timeout, int pollingInterval, int extendedTimeout, params Type[] ignoredExceptions)
@@ -24,13 +23,22 @@
             PollingInterval = pollingInterval;
             ExtendOnTimeout = true;
             ExtendedTimeout = extendedTimeout;
-            IgnoredExceptions = ignoredExceptions;
+            IgnoredExceptionsTypeNames = ignoredExceptions.Select(type => type.AssemblyQualifiedName).ToArray();
         }
 
-        public int Timeout { get; }
-        public int PollingInterval { get; }
-        public bool ExtendOnTimeout { get; }
-        public int ExtendedTimeout { get; }
-        public Type[] IgnoredExceptions { get; }
+        public int Timeout { get; set; } = 1000;
+        public int PollingInterval { get; set; } = 250;
+        public bool ExtendOnTimeout { get; set; } = false;
+        public int ExtendedTimeout { get; set; } = 5000;
+        public string[] IgnoredExceptionsTypeNames { get; set; }
+
+        public Type[] IgnoredExceptions
+        {
+            get
+            {
+                return IgnoredExceptionsTypeNames.Select(name =>
+                    Type.GetType(name)).ToArray();;
+            }
+        }
     }
 }

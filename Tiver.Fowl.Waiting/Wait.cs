@@ -2,30 +2,35 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Configuration;
     using Exceptions;
-    using Logging;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
 
     public class Wait
     {
-        private static readonly ILog Logger = LogProvider.For<Wait>();
+        private static readonly ILogger Logger = new Logger<Wait>(new NullLoggerFactory());
 
         protected Wait() { }
 
         public static TResult Until<TResult>(Func<TResult> condition)
         {
-            IWaitConfiguration config = (WaitConfigurationSection) ConfigurationManager.GetSection("waitConfigurationGroup/waitConfiguration") 
-                                        ?? (IWaitConfiguration) new WaitConfiguration();
+            var waitConfiguration = new WaitConfiguration();
 
-            return Until(condition, config);
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("Tiver_config.json", optional: true)
+                .Build();
+            config.GetSection("Tiver.Fowl.Waiting").Bind(waitConfiguration);
+
+            return Until(condition, waitConfiguration);
         }
 
-        public static TResult Until<TResult>(Func<TResult> condition, IWaitConfiguration configuration)
+        public static TResult Until<TResult>(Func<TResult> condition, WaitConfiguration configuration)
         {
             // Start continious checking
             var stopwatch = Stopwatch.StartNew();
@@ -63,9 +68,9 @@
                     // Exit condition - some non-default result
                     if (!EqualityComparer<TResult>.Default.Equals(result, default(TResult)))
                     {
-                        using (LogProvider.OpenMappedContext("LogType", "Wait"))
+                        using (Logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                         {
-                            Logger.DebugFormat("Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
+                            Logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
                         }
 
                         return result;
@@ -103,9 +108,9 @@
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             if (IsTimeoutReached(timeout, stopwatch))
             {
-                using (LogProvider.OpenMappedContext("LogType", "Wait"))
+                using (Logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                 {
-                    Logger.DebugFormat("Waiting failed after {ms}ms", elapsedMilliseconds);
+                    Logger.Log(LogLevel.Debug, "Waiting failed after {ms}ms", elapsedMilliseconds);
                 }
                 stopwatch.Stop();
 
