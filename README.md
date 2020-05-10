@@ -1,5 +1,5 @@
-# tiver-fowl.Waiting  [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/MrHant/tiver-fowl/master/LICENSE)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting?ref=badge_shield)
+# tiver-fowl.Waiting  ![.NET Core](https://img.shields.io/badge/.NET%20Core-3.1-blue)[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/MrHant/tiver-fowl/master/LICENSE)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMrHant%2Ftiver-fowl.Waiting?ref=badge_shield)
+
 
 "Wait" implementation.
 Allows to process given condition until timeout is reached.
@@ -15,45 +15,40 @@ develop | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/Tiver.Fowl.Wai
 
 ## Configurable
 
-Can be configured via `App.config` file in following way:
+Can be configured via `Tiver_config.json` file in following way:
 
-    <!-- Configuration section-handler declaration area. -->
-    <configSections>
-        <sectionGroup name="waitConfigurationGroup">
-            <section
-                name="waitConfiguration"
-                type="Tiver.Fowl.Waiting.Configuration.WaitConfigurationSection, Tiver.Fowl.Waiting"
-                allowLocation="true"
-                allowDefinition="Everywhere" />
-        </sectionGroup>
-    </configSections>
-
-    <!-- Configuration section settings area. -->
-    <waitConfigurationGroup>
-        <waitConfiguration
-            timeout="1000"
-            pollingInterval="250" />
-    </waitConfigurationGroup>
+```json
+{
+  "Tiver.Fowl.Waiting": {
+    "Timeout": 1000,
+    "PollingInterval": 250
+  }
+}
+```
 
 
 Full configuration can look like following:
 
-    <waitConfiguration
-        timeout="5000"
-        pollingInterval="250"
-        extendOnTimeout="true"
-        extendedTimeout="15000" >
-        <IgnoredExceptions>
-            <Exception type="System.ArgumentException" />
-            <Exception type="NUnit.Framework.AssertionException, NUnit.Framework" />
-        </IgnoredExceptions>
-    </waitConfiguration>
+```json
+{
+  "Tiver.Fowl.Waiting": {
+    "Timeout": 5000,
+    "PollingInterval": 250,
+    "ExtendOnTimeout": true,
+    "ExtendedTimeout": 15000,
+    "IgnoredExceptionsTypeNames": [
+      "System.ArgumentException",
+      "NUnit.Framework.AssertionException, NUnit.Framework"
+    ]
+  }
+}
+```
 
 ## Loggable
 
-Produces debug log. Doesn't force any specific logging library. (uses LibLog v4.2.6)
+Produces debug log. Uses `Microsoft.Extensions.Logging.Abstractions`
 
-You can transparently use any of following loggers:  NLog, Log4Net, EntLib Logging, Serilog and Loupe.
+Logger instance can be configured using static method: `Wait.SetLogger(loggerInstance)`
 
 ## Timeout Exception
 
@@ -63,32 +58,40 @@ Throws `Tiver.Fowl.Waiting.Exceptions.WaitTimeoutException` on timeout
 
 You can ignore exceptions during Wait
 
-    // Following code throws System.DivideByZeroException
-    var zero = 0;
-    var wait = Wait.Until(() => 2 / zero);
+```c#
+// Following code throws System.DivideByZeroException
+var zero = 0;
+var wait = Wait.Until(() => 2 / zero);
 
-    // Following code continue execution before timeout occurs
-    var zero = 0;
-    var wait = Wait.Until(() => 2 / zero, new WaitConfiguration(typeof(DivideByZeroException)));
+// Following code continue execution before timeout occurs
+var zero = 0;
+var wait = Wait.Until(() => 2 / zero, new WaitConfiguration(typeof(DivideByZeroException)));
+```
 
 ## Samples
 
 Simple Wait (use `App.config` values or defaults)
 
-    var result = Wait.Until(() => 2 + 2);
-    Assert.AreEqual(4, result);
+```c#
+var result = Wait.Until(() => 2 + 2);
+Assert.AreEqual(4, result);
+```
 
 Simple Wait with specific config
 
-    var config = new WaitConfiguration(1000, 250);
-    var result = Wait.Until(() => 2 + 2, config);
-    Assert.AreEqual(4, result);
+```c#
+var config = new WaitConfiguration(1000, 250);
+var result = Wait.Until(() => 2 + 2, config);
+Assert.AreEqual(4, result);
+```
 
 Extensible Wait
 
-    var config = new WaitConfiguration(1000, 250, 5000);
-    var result = Wait.Until(() => 2 + 2, config);
-    Assert.AreEqual(4, result);
+```c#
+var config = new WaitConfiguration(1000, 250, 5000);
+var result = Wait.Until(() => 2 + 2, config);
+Assert.AreEqual(4, result);
+```
 
 
 ## License

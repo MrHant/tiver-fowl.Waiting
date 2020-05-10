@@ -1,19 +1,9 @@
 const string project = "Tiver.Fowl.Waiting";
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
-var solutionFilename = Argument("solutionFilename", project + ".sln");
-var projects = Argument("projects", project + ";Tests;TestsMsTest");
+var projects = Argument("projects", project + ";TestsCore;TestsCoreMsTest");
 
 var projectDirectories = projects.Split(';');
-
-DirectoryPath vsLatest  = VSWhereLatest();
-var msBuildPath = (vsLatest==null)
-                            ? null
-                            : vsLatest.CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
-
-var msTestPath = (vsLatest==null)
-                            ? null
-                            : vsLatest.CombineWithFilePath("./Common7/IDE/MSTest.exe");
 
 GitVersion versionInfo;
 string version;
@@ -40,8 +30,8 @@ Teardown(_ =>
 Task("RestoreNuGetPackages")
     .Does(() =>
 {
-    Information("Restoring nuget packages for {0}", solutionFilename);
-    NuGetRestore("./" + solutionFilename);
+    Information("Restoring nuget packages");
+    DotNetCoreRestore();
 });
 
 Task("Clean")
@@ -60,37 +50,22 @@ Task("Build")
     .IsDependentOn("Version")
     .Does(() =>
 {
-    Information("Building {0} with configuration {1}", solutionFilename, configuration);
-    MSBuild("./" + solutionFilename, new MSBuildSettings {
-        ToolVersion = MSBuildToolVersion.VS2017,
-        Configuration = configuration,
-        ToolPath = msBuildPath
-    });
-});
+    Information("Building with configuration {0}", configuration);
+    var settings = new DotNetCoreBuildSettings
+     {
+         Framework = "netcoreapp3.1",
+         Configuration = "Release",
+     };
 
-Task("RunUnitTestsNUnit")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    NUnit("./Tests/bin/" + configuration + "/Tests.dll", new NUnitSettings {
-        ToolPath = "./tools/NUnit.ConsoleRunner/tools/nunit3-console.exe"
-    });
+     DotNetCoreBuild("./"+project+"/"+project+".csproj", settings);
 });
-
-Task("RunUnitTestsMSTest")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-      var paths = new List<FilePath>() { "./TestsMsTest/bin/" + configuration + "/TestsMsTest.dll" };
-      MSTest(paths, new MSTestSettings {
-          ToolPath = msTestPath
-      });
-});
-
 
 Task("RunUnitTests")
-    .IsDependentOn("RunUnitTestsNUnit")
-    .IsDependentOn("RunUnitTestsMSTest");
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    DotNetCoreTest();
+});
 
 Task("Version")
     .Does(() =>
