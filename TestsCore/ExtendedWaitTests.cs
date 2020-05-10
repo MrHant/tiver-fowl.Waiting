@@ -1,11 +1,10 @@
-﻿namespace Tests
+﻿namespace TestsCore
 {
     using System;
     using System.Diagnostics;
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Interfaces;
-    using Tests;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;

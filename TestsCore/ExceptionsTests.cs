@@ -1,4 +1,4 @@
-﻿namespace Tests
+﻿namespace TestsCore
 {
     using System;
     using Moq;
