@@ -54,7 +54,7 @@ Task("Build")
     var settings = new DotNetCoreBuildSettings
      {
          Framework = "netcoreapp3.1",
-         Configuration = "Release",
+         Configuration = configuration,
      };
 
      DotNetCoreBuild("./"+project+"/"+project+".csproj", settings);
