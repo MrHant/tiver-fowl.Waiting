@@ -70,7 +70,7 @@ var wait = Wait.Until(() => 2 / zero, new WaitConfiguration(typeof(DivideByZeroE
 
 ## Samples
 
-Simple Wait (use `App.config` values or defaults)
+Simple Wait (use `Tiver_config.json` values or defaults)
 
 ```c#
 var result = Wait.Until(() => 2 + 2);
