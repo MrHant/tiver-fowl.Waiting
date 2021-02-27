@@ -18,7 +18,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
-[AppVeyor(AppVeyorImage.VisualStudio2019, SkipTags = true)]
+[AppVeyor(AppVeyorImage.VisualStudio2019, SkipTags = true, InvokedTargets = new[] { nameof(Test), nameof(Push) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:

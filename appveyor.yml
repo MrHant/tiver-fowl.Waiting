@@ -20,6 +20,8 @@ image:
 skip_tags: true
 
 build_script:
-  - cmd: .\build.cmd 
-  - sh: ./build.cmd 
+  - cmd: .\build.cmd Test Push
+  - sh: ./build.cmd Test Push
 
+artifacts:
+  - path: artifacts/*.nupkg
