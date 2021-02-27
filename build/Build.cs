@@ -30,6 +30,9 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
+    [Parameter] string NugetApiUrl = "https://api.nuget.org/v3/index.json";
+    [Parameter] string NugetApiKey;
+    
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion(Framework = "net5.0", NoFetch = true)] readonly GitVersion GitVersion;
@@ -96,4 +99,22 @@ class Build : NukeBuild
             );
         });
 
+    Target Push => _ => _
+        .DependsOn(Pack)
+        .Requires(() => NugetApiUrl)
+        .Requires(() => NugetApiKey)
+        .Requires(() => Configuration.Equals(Configuration.Release))
+        .Executes(() =>
+        {
+            GlobFiles(ArtifactsDirectory, "*.nupkg")
+                .NotEmpty()
+                .ForEach(x =>
+                {
+                    DotNetNuGetPush(s => s
+                        .SetTargetPath(x)
+                        .SetSource(NugetApiUrl)
+                        .SetApiKey(NugetApiKey)
+                    );
+                });
+        });
 }
