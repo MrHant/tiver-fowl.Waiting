@@ -89,6 +89,7 @@ class Build : NukeBuild
                 .EnableNoCache()
                 .EnableNoRestore()
                 .SetProject(Solution)
+                .SetConfiguration(Configuration)
                 .SetOutputDirectory(ArtifactsDirectory)
                 .SetVersion(GitVersion.NuGetVersionV2)
                 .SetAuthors("Artsiomi Silivonchyk")
