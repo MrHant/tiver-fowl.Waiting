@@ -92,7 +92,7 @@ class Build : NukeBuild
                 .SetPackageProjectUrl("https://github.com/MrHant/tiver-fowl.Waiting")
                 .SetDescription("%22Wait%22 implementation. Configurable%2c loggable.")
                 .EnableIncludeSymbols()
-                .EnableIncludeSource()
+                .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
             );
         });
 
