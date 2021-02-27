@@ -71,16 +71,19 @@ class Build : NukeBuild
     
     Target Test => _ => _
         .DependsOn(Compile)
+        .Produces(ArtifactsDirectory / "*.trx")
         .Executes(() =>
         {
             DotNetTest(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
+                .SetLogger("trx")
+                .SetResultsDirectory(ArtifactsDirectory)
             );
         });
 
     Target Pack => _ => _
-        .DependsOn(Clean, Compile)
+        .DependsOn(Test, Clean, Compile)
         .Produces(ArtifactsDirectory / "*.nupkg")
         .Executes(() =>
         {

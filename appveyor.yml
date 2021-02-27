@@ -24,4 +24,5 @@ build_script:
   - sh: ./build.cmd Test Push
 
 artifacts:
+  - path: artifacts/*.trx
   - path: artifacts/*.nupkg
