@@ -76,7 +76,7 @@ class Build : NukeBuild
             DotNetTest(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                .SetLogger("Appveyor")
+                //.SetLogger("Appveyor")
                 .SetResultsDirectory(ArtifactsDirectory)
             );
         });
