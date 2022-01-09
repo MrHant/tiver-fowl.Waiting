@@ -96,6 +96,7 @@ class Build : NukeBuild
                 .SetVersion(GitVersion.NuGetVersionV2)
                 .SetAuthors("Artsiomi Silivonchyk")
                 .SetProperty("PackageLicenseExpression", "MIT")
+                .SetProperty("PackageReadmeFile", "README.md")
                 .DisablePackageRequireLicenseAcceptance()
                 .SetPackageProjectUrl("https://github.com/MrHant/tiver-fowl.Waiting")
                 .SetDescription("%22Wait%22 implementation. Configurable%2c loggable.")
