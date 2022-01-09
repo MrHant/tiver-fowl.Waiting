@@ -6,14 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tiver.Fowl.Waiting", "Tiver.Fowl.Waiting\Tiver.Fowl.Waiting.csproj", "{80DF3569-CECF-408D-B511-186373D96D25}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23173423-C009-4DE3-AC87-0D8634742572}"
-	ProjectSection(SolutionItems) = preProject
-		build.cake = build.cake
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{19E0180F-2356-4E21-A894-A2DBB6846B56}"
-	ProjectSection(SolutionItems) = preProject
-		package\Package.nuspec = package\Package.nuspec
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsCore", "TestsCore\TestsCore.csproj", "{B40B3B8E-9F5D-4895-990F-45832218B698}"
 EndProject

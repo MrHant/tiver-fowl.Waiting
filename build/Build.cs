@@ -37,7 +37,7 @@ class Build : NukeBuild
     
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion(Framework = "net5.0", NoFetch = true)] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "net6.0", NoFetch = true)] readonly GitVersion GitVersion;
 
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
 
@@ -76,7 +76,7 @@ class Build : NukeBuild
             DotNetTest(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                .SetLogger("Appveyor")
+                .AddLoggers("Appveyor", "trx")
                 .SetResultsDirectory(ArtifactsDirectory)
             );
         });
@@ -96,6 +96,7 @@ class Build : NukeBuild
                 .SetVersion(GitVersion.NuGetVersionV2)
                 .SetAuthors("Artsiomi Silivonchyk")
                 .SetProperty("PackageLicenseExpression", "MIT")
+                .SetProperty("PackageReadmeFile", "README.md")
                 .DisablePackageRequireLicenseAcceptance()
                 .SetPackageProjectUrl("https://github.com/MrHant/tiver-fowl.Waiting")
                 .SetDescription("%22Wait%22 implementation. Configurable%2c loggable.")
