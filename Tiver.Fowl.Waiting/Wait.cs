@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Transactions;
     using Configuration;
     using Exceptions;
     using Microsoft.Extensions.Configuration;
@@ -21,15 +22,31 @@
             _logger = logger;
         }
 
+        public static void Until(Action action)
+        {
+            var waitConfiguration = GetConfigurationFromFile();
+
+            Until(() =>
+                {
+                    action.Invoke();
+                    return true;
+                },
+                waitConfiguration);
+        }
+
+        public static void Until(Action action, WaitConfiguration configuration)
+        {
+            Until(() =>
+                {
+                    action.Invoke();
+                    return true;
+                },
+                configuration);
+        }
+        
         public static TResult Until<TResult>(Func<TResult> condition)
         {
-            var waitConfiguration = new WaitConfiguration();
-
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("Tiver_config.json", optional: true)
-                .Build();
-            config.GetSection("Tiver.Fowl.Waiting").Bind(waitConfiguration);
-
+            var waitConfiguration = GetConfigurationFromFile();
             return Until(condition, waitConfiguration);
         }
 
@@ -147,6 +164,17 @@
             method?.Invoke(null, new object[] { "Timeout for Wait was extended." });
         }
 
+        private static WaitConfiguration GetConfigurationFromFile()
+        {
+            var waitConfiguration = new WaitConfiguration();
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("Tiver_config.json", optional: true)
+                .Build();
+            config.GetSection("Tiver.Fowl.Waiting").Bind(waitConfiguration);
+            return waitConfiguration;
+        }
+        
         private static readonly Type AssertType = Type.GetType("NUnit.Framework.Assert, nunit.framework");
 
         private static readonly bool NUnitReferenced = AssertType != null;

@@ -3,5 +3,7 @@
     public interface ICounter
     {
         int GetCount();
+
+        void Tick();
     }
 }
