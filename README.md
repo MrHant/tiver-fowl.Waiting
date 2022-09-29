@@ -91,3 +91,12 @@ var config = new WaitConfiguration(1000, 250, 5000);
 var result = Wait.Until(() => 2 + 2, config);
 Assert.AreEqual(4, result);
 ```
+
+Custom exit condition
+_(Default one - result is not null)_
+
+```c#
+var counter = 0;
+var result = Wait.Until(() => counter += 1, result => result == 10);
+Assert.AreEqual(10, result);
+```

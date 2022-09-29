@@ -50,7 +50,21 @@
             return Until(condition, waitConfiguration);
         }
 
+        public static TResult Until<TResult>(Func<TResult> condition, Func<TResult, bool> exitCondition)
+        {
+            var waitConfiguration = GetConfigurationFromFile();
+            return Until(condition, exitCondition, waitConfiguration);
+        }
+        
         public static TResult Until<TResult>(Func<TResult> condition, WaitConfiguration configuration)
+        {
+            var defaultExitCondition = new Func<TResult, bool>((result) =>
+                !EqualityComparer<TResult>.Default.Equals(result, default(TResult)));
+            
+            return Until(condition, defaultExitCondition, configuration);
+        }
+
+        public static TResult Until<TResult>(Func<TResult> condition, Func<TResult, bool> exitCondition, WaitConfiguration configuration)
         {
             // Start continious checking
             var stopwatch = Stopwatch.StartNew();
@@ -86,7 +100,7 @@
                     }
 
                     // Exit condition - some non-default result
-                    if (!EqualityComparer<TResult>.Default.Equals(result, default(TResult)))
+                    if (exitCondition.Invoke(result))
                     {
                         using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                         {
