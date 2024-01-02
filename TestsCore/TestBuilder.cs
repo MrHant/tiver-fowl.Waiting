@@ -32,6 +32,7 @@
     using NUnit.Framework.Internal;
     using NUnit.Framework.Internal.Builders;
     using NUnit.Framework.Internal.Execution;
+    using NUnit.Framework.Legacy;
 
     /// <summary>
     /// Utility Class used to build and run NUnit tests used as test data
@@ -60,14 +61,14 @@
         public static TestSuite MakeParameterizedMethodSuite(Type type, string methodName)
         {
             var suite = MakeTestFromMethod(type, methodName) as TestSuite;
-            Assert.NotNull(suite, "Unable to create parameterized suite - most likely there is no data provided");
+            ClassicAssert.NotNull(suite, "Unable to create parameterized suite - most likely there is no data provided");
             return suite;
         }
 
         public static TestMethod MakeTestCase(Type type, string methodName)
         {
             var test = MakeTestFromMethod(type, methodName) as TestMethod;
-            Assert.NotNull(test, "Unable to create TestMethod from {0}", methodName);
+            ClassicAssert.NotNull(test, "Unable to create TestMethod from {0}", methodName);
 
             return test;
         }
