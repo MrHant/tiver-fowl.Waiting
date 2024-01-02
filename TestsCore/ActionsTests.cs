@@ -3,6 +3,7 @@ namespace TestsCore
     using System;
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
@@ -37,7 +38,7 @@ namespace TestsCore
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.Tick(), Times.AtLeast(3));
         }
     }
