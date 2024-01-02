@@ -2,6 +2,7 @@ namespace TestsCore
 {
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
@@ -16,7 +17,7 @@ namespace TestsCore
             var result = Wait.Until(
                 () => counter += 1,
                 r => r == 10);
-            Assert.AreEqual(10, result);
+            ClassicAssert.AreEqual(10, result);
         }
         
         [Test]
@@ -35,7 +36,7 @@ namespace TestsCore
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
         }
     }
 }
