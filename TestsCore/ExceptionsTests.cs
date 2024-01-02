@@ -3,6 +3,7 @@
     using System;
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
@@ -26,7 +27,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.Exactly(1));
         }
 
@@ -46,7 +47,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
         }
 
@@ -66,7 +67,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
         }
 
@@ -88,7 +89,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
         }
 
@@ -104,7 +105,7 @@
 
             var wait = Wait.Until(() => mock.Object.GetCount() == 3, new WaitConfiguration(typeof(ArgumentException)));
 
-            Assert.IsTrue(wait);
+            ClassicAssert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(3));
         }
     }

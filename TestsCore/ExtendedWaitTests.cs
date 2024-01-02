@@ -5,6 +5,7 @@
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Interfaces;
+    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
@@ -21,7 +22,7 @@
             var config = new WaitConfiguration(1000, 250, 3000);
             var wait = Wait.Until(() => mock.Object.GetCount() == 10, config);
 
-            Assert.IsTrue(wait);
+            ClassicAssert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(1));
         }
 
@@ -44,9 +45,9 @@
             }
 
             stopwatch.Stop();
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
-            Assert.IsTrue(passedSeconds > 10000 && passedSeconds - 10000 < 1000);
+            ClassicAssert.IsTrue(passedSeconds > 10000 && passedSeconds - 10000 < 1000);
         }
 
         public static void ExceptionIgnoredViaConfigurationMethod()
@@ -66,7 +67,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
         }
 
@@ -77,8 +78,8 @@
                 typeof(ExtendedWaitTests),
                 "TotalTimeOfFailingWaitMethod");
 
-            Assert.AreEqual(ResultState.Warning, result.ResultState);
-            Assert.AreEqual("Timeout for Wait was extended.", result.Message);
+            ClassicAssert.AreEqual(ResultState.Warning, result.ResultState);
+            ClassicAssert.AreEqual("Timeout for Wait was extended.", result.Message);
         }
 
         [Test]
@@ -88,8 +89,8 @@
                 typeof(ExtendedWaitTests),
                 "ExceptionIgnoredViaConfigurationMethod");
 
-            Assert.AreEqual(ResultState.Warning, result.ResultState);
-            Assert.AreEqual("Timeout for Wait was extended.", result.Message);
+            ClassicAssert.AreEqual(ResultState.Warning, result.ResultState);
+            ClassicAssert.AreEqual("Timeout for Wait was extended.", result.Message);
         }
     }
 }

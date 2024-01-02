@@ -5,6 +5,7 @@
     using System.Threading;
     using Moq;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
     using Tiver.Fowl.Waiting.Exceptions;
@@ -21,7 +22,7 @@
 
             var wait = Wait.Until(() => mock.Object.GetCount() == 10);
 
-            Assert.IsTrue(wait);
+            ClassicAssert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(1));
         }
 
@@ -36,7 +37,7 @@
 
             var wait = Wait.Until(() => mock.Object.GetCount() == 5);
 
-            Assert.IsTrue(wait);
+            ClassicAssert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(5));
         }
 
@@ -56,7 +57,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
         }
 
@@ -77,7 +78,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.Between(8, 10, Range.Inclusive));
         }
 
@@ -98,7 +99,7 @@
                 success = true;
             }
 
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             mock.Verify(x => x.GetCount(), Times.Exactly(1));
         }
 
@@ -122,9 +123,9 @@
             }
 
             stopwatch.Stop();
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
-            Assert.IsTrue(passedSeconds > 10000 && passedSeconds - 10000 < 1000);
+            ClassicAssert.IsTrue(passedSeconds > 10000 && passedSeconds - 10000 < 1000);
         }
 
         [Test]
@@ -139,9 +140,9 @@
             var wait = Wait.Until(() => mock.Object.GetCount() == 10, config);
 
             stopwatch.Stop();
-            Assert.IsTrue(wait);
+            ClassicAssert.IsTrue(wait);
             var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
-            Assert.IsTrue(passedSeconds < 1000);
+            ClassicAssert.IsTrue(passedSeconds < 1000);
         }
 
         [Test]
@@ -165,9 +166,9 @@
             }
 
             stopwatch.Stop();
-            Assert.IsTrue(success);
+            ClassicAssert.IsTrue(success);
             var passedSeconds = stopwatch.Elapsed.TotalMilliseconds;
-            Assert.IsTrue(passedSeconds > 5000 && passedSeconds - 5000 < 1000);
+            ClassicAssert.IsTrue(passedSeconds > 5000 && passedSeconds - 5000 < 1000);
         }
     }
 }
