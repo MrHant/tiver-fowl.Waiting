@@ -17,7 +17,7 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 [ShutdownDotNetAfterServerBuild]
-[AppVeyor(AppVeyorImage.VisualStudio2019, SkipTags = true, InvokedTargets = new[] { nameof(Test), nameof(Push) })]
+[AppVeyor(AppVeyorImage.VisualStudio2022, SkipTags = true, InvokedTargets = new[] { nameof(Test), nameof(Push) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
