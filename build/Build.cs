@@ -16,9 +16,8 @@ using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
-[AppVeyor(AppVeyorImage.VisualStudio2019, SkipTags = true, InvokedTargets = new[] { nameof(Test), nameof(Push) })]
+[AppVeyor(AppVeyorImage.VisualStudio2022, SkipTags = true, InvokedTargets = new[] { nameof(Test), nameof(Push) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -37,7 +36,7 @@ class Build : NukeBuild
     
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion(Framework = "net6.0", NoFetch = true)] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "net8.0", NoFetch = true)] readonly GitVersion GitVersion;
 
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
 
@@ -45,7 +44,7 @@ class Build : NukeBuild
         .Before(Restore)
         .Executes(() =>
         {
-            EnsureCleanDirectory(ArtifactsDirectory);
+            ArtifactsDirectory.CreateOrCleanDirectory();
         });
 
     Target Restore => _ => _
@@ -112,7 +111,7 @@ class Build : NukeBuild
         .Requires(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
-            GlobFiles(ArtifactsDirectory, "*.nupkg")
+            ArtifactsDirectory.GlobFiles("*.nupkg")
                 .NotEmpty()
                 .ForEach(x =>
                 {
