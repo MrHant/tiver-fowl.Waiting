@@ -24,7 +24,9 @@
 		// Configure properties specific to VS Code.
 		"vscode": {
 			"extensions": [
-				"GitHub.copilot"
+				"GitHub.copilot",
+				"GitHub.vscode-github-actions",
+				"ms-dotnettools.csdevkit"
 			]
         }
     }
