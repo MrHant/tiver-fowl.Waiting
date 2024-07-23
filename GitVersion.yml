@@ -1,8 +1,8 @@
-assembly-informational-format: "{NuGetVersionV2}"
+assembly-informational-format: "{SemVer}"
 branches: 
   develop:
     mode: ContinuousDeployment
-    tag: alpha
+    label: alpha
     increment: Patch
 ignore:
   sha: []
