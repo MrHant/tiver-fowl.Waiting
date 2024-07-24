@@ -25,4 +25,13 @@ jobs:
       
       - name: Run tests
         run: dotnet test
-   
+
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --output ${{ env.OutputDirectory }}
+        
+      - name: Publish NuGet package
+        run: |
+          foreach($file in (Get-ChildItem "${{ env.OutputDirectory }}" -Recurse -Include *.nupkg)) {
+              dotnet nuget push $file --api-key "${{ secrets.NUGET_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          }
+    
