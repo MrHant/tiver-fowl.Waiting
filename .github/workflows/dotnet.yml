@@ -1,4 +1,4 @@
-name: Dotnet
+name: Test & Publish NuGet package
 
 on:
   push:
