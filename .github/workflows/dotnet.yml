@@ -3,8 +3,8 @@ name: Test & Publish NuGet package
 on:
   push:
     branches:
-      - gh
-  workflow_dispatch:
+      - master
+      - develop
     
 env:
   OutputDirectory: ${{ github.workspace}}/output
