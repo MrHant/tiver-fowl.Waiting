@@ -1,9 +1,0 @@
-assembly-informational-format: "{SemVer}"
-branches: 
-  develop:
-    mode: ContinuousDeployment
-    label: alpha
-    increment: Patch
-ignore:
-  sha: []
-  
