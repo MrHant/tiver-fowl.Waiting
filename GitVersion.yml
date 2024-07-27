@@ -1,9 +1,0 @@
-assembly-informational-format: "{NuGetVersionV2}"
-branches: 
-  develop:
-    mode: ContinuousDeployment
-    tag: alpha
-    increment: Patch
-ignore:
-  sha: []
-  
