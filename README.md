@@ -1,16 +1,13 @@
-# tiver-fowl.Waiting
+# tiver-fowl.Waiting [![Dotnet](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml) [![NuGet](https://img.shields.io/nuget/v/Tiver.Fowl.Waiting.svg)](https://www.nuget.org/packages/Tiver.Fowl.Waiting/)
 
 "Wait" implementation.
 Allows to process given condition until timeout is reached.
 Overall timeout and polling interval are configurable.
 Appearing exceptions can be ignored so processing of condition continues.
 
-## Branch status
+## Installation
 
-| Branch | Package | CI  |
-| ------ | ------- | --- |
-| master (stable) | [![NuGet](https://img.shields.io/nuget/v/Tiver.Fowl.Waiting.svg)](https://www.nuget.org/packages/Tiver.Fowl.Waiting/) | [![Build status](https://ci.appveyor.com/api/projects/status/eem0vm70l9o185qv/branch/master?svg=true)](https://ci.appveyor.com/project/MrHant/tiver-fowl-waiting/branch/master) |
-| develop | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/Tiver.Fowl.Waiting.svg)](https://www.nuget.org/packages/Tiver.Fowl.Waiting/absoluteLatest) | [![Build status](https://ci.appveyor.com/api/projects/status/eem0vm70l9o185qv/branch/develop?svg=true)](https://ci.appveyor.com/project/MrHant/tiver-fowl-waiting/branch/develop) |
+* Install via NuGet package [Tiver.Fowl.Waiting](https://www.nuget.org/packages/Tiver.Fowl.Waiting/)  
 
 ## Configurable
 
