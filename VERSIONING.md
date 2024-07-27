@@ -24,8 +24,8 @@ git push --tags
 
 ## How to finalize version
 
-On master branch - add tag of needed version
-Master branch is built on CI only for tagged commits
+On master or develop branch - add tag of needed version
+
 ```
 git tag 1.1.0
 git push --tags
