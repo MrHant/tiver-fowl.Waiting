@@ -1,4 +1,4 @@
-# tiver-fowl.Waiting [![Dotnet](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml) [![NuGet](https://img.shields.io/nuget/v/Tiver.Fowl.Waiting.svg)](https://www.nuget.org/packages/Tiver.Fowl.Waiting/)
+# tiver-fowl.Waiting [![Test & Publish NuGet package](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MrHant/tiver-fowl.Waiting/actions/workflows/dotnet.yml) [![NuGet](https://img.shields.io/nuget/v/Tiver.Fowl.Waiting.svg)](https://www.nuget.org/packages/Tiver.Fowl.Waiting/)
 
 "Wait" implementation.
 Allows to process given condition until timeout is reached.
