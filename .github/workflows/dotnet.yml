@@ -23,8 +23,17 @@ jobs:
         with:
           dotnet-version: '8.x'
       
-      - name: Run tests
-        run: dotnet test
+      - name: Run tests - net462
+        run: dotnet test -f net462 -c Release -v quiet
+
+      - name: Run tests - net472
+        run: dotnet test -f net472 -c Release -v quiet
+
+      - name: Run tests - net48
+        run: dotnet test -f net48 -c Release -v quiet
+
+      - name: Run tests - net8.0
+        run: dotnet test -f net8.0 -c Release -v quiet
 
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --output ${{ env.OutputDirectory }}
