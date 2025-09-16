@@ -97,3 +97,9 @@ var counter = 0;
 var result = Wait.Until(() => counter += 1, result => result == 10);
 Assert.AreEqual(10, result);
 ```
+
+## Design decisions
+
+### Synchronous API Rationale
+
+The library intentionally exposes synchronous waiting helpers. They are primarily used in UI integration tests which simulate user interactions.
