@@ -146,6 +146,63 @@
         }
 
         [Test]
+        public static void BlockingConditionInvokedOnlyOnce()
+        {
+            var invocations = 0;
+            var config = new WaitConfiguration(500, 100);
+
+            var success = false;
+            try
+            {
+                Wait.Until(() =>
+                {
+                    Interlocked.Increment(ref invocations);
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    return false;
+                }, config);
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            ClassicAssert.IsTrue(success);
+            ClassicAssert.AreEqual(1, invocations);
+        }
+
+        [Test]
+        public static void TotalTimeOfWaitWithLateBlockingCondition()
+        {
+            var config = new WaitConfiguration(2000, 100);
+            var stopwatch = Stopwatch.StartNew();
+
+            var success = false;
+            try
+            {
+                Wait.Until(() =>
+                {
+                    // Behave well for most of the budget, then block -
+                    // total time must still respect the configured timeout
+                    if (stopwatch.ElapsedMilliseconds > 1500)
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(10));
+                    }
+
+                    return false;
+                }, config);
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            stopwatch.Stop();
+            ClassicAssert.IsTrue(success);
+            var passedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+            ClassicAssert.IsTrue(passedMilliseconds > 2000 && passedMilliseconds - 2000 < 1000);
+        }
+
+        [Test]
         public static void TotalTimeOfTooLongConditionWait()
         {
             var success = false;

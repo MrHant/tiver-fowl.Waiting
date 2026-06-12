@@ -71,6 +71,7 @@
             Exception lastException = null;
             var wasExtended = false;
             var currentTimeout = configuration.Timeout;
+            Task<TResult> pendingTask = null;
 
             while (true)
             {
@@ -90,12 +91,26 @@
                     TResult result;
                     try
                     {
-                        var task = Task.Factory.StartNew(condition.Invoke);
-                        task.Wait(TimeSpan.FromMilliseconds(currentTimeout));
-                        result = task.IsCompleted ? task.Result : default(TResult);
+                        // Re-await a still-running invocation instead of spawning
+                        // a new one running concurrently with it
+                        var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
+                        var remaining = Math.Max(0L, currentTimeout - stopwatch.ElapsedMilliseconds);
+                        task.Wait(TimeSpan.FromMilliseconds(remaining));
+
+                        if (task.IsCompleted)
+                        {
+                            pendingTask = null;
+                            result = task.Result;
+                        }
+                        else
+                        {
+                            pendingTask = task;
+                            result = default(TResult);
+                        }
                     }
                     catch (AggregateException ae)
                     {
+                        pendingTask = null;
                         throw ae.InnerExceptions[0];
                     }
 
