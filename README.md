@@ -50,9 +50,13 @@ Logger instance can be configured using static method: `Wait.SetLogger(loggerIns
 
 Throws `Tiver.Fowl.Waiting.Exceptions.WaitTimeoutException` on timeout
 
+If exceptions were ignored during the Wait, the last one is available as `InnerException`
+
 ## Ignoring  Exceptions
 
 You can ignore exceptions during Wait
+
+Exceptions not listed as ignored propagate immediately with their original stack trace
 
 ```c#
 // Following code throws System.DivideByZeroException

@@ -1,6 +1,7 @@
 ﻿namespace TestsCore
 {
     using System;
+    using System.Runtime.CompilerServices;
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
@@ -113,6 +114,79 @@
             }
 
             ClassicAssert.IsTrue(success);
+        }
+
+        [Test]
+        public static void OriginalStackTraceIsPreservedWhenConditionThrows()
+        {
+            var config = new WaitConfiguration(500, 100);
+
+            string stackTrace = null;
+            try
+            {
+                Wait.Until(() =>
+                {
+                    ThrowFromHelper();
+                    return true;
+                }, config);
+            }
+            catch (InvalidOperationException ex)
+            {
+                stackTrace = ex.StackTrace;
+            }
+
+            ClassicAssert.IsNotNull(stackTrace);
+            ClassicAssert.IsTrue(stackTrace.Contains(nameof(ThrowFromHelper)));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowFromHelper()
+        {
+            throw new InvalidOperationException("Thrown from helper");
+        }
+
+        [Test]
+        public static void LastIgnoredExceptionAvailableAsInnerException()
+        {
+            var invocations = 0;
+            var config = new WaitConfiguration(500, 100, typeof(ArgumentException));
+
+            WaitTimeoutException caught = null;
+            try
+            {
+                Wait.Until<bool>(() =>
+                {
+                    var invocation = ++invocations;
+                    throw new ArgumentException($"failure #{invocation}");
+                }, config);
+            }
+            catch (WaitTimeoutException ex)
+            {
+                caught = ex;
+            }
+
+            ClassicAssert.IsNotNull(caught);
+            ClassicAssert.IsInstanceOf<ArgumentException>(caught.InnerException);
+            ClassicAssert.AreEqual($"failure #{invocations}", caught.InnerException.Message);
+        }
+
+        [Test]
+        public static void NoInnerExceptionWhenNoExceptionWasIgnored()
+        {
+            var config = new WaitConfiguration(500, 100);
+
+            WaitTimeoutException caught = null;
+            try
+            {
+                Wait.Until(() => false, config);
+            }
+            catch (WaitTimeoutException ex)
+            {
+                caught = ex;
+            }
+
+            ClassicAssert.IsNotNull(caught);
+            ClassicAssert.IsNull(caught.InnerException);
         }
 
         [Test]

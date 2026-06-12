@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Transactions;
     using Configuration;
     using Exceptions;
     using Microsoft.Extensions.Configuration;
@@ -59,7 +58,7 @@
         public static TResult Until<TResult>(Func<TResult> condition, WaitConfiguration configuration)
         {
             var defaultExitCondition = new Func<TResult, bool>((result) =>
-                !EqualityComparer<TResult>.Default.Equals(result, default(TResult)));
+                !EqualityComparer<TResult>.Default.Equals(result, default));
             
             return Until(condition, defaultExitCondition, configuration);
         }
@@ -89,29 +88,25 @@
                 try
                 {
                     TResult result;
-                    try
-                    {
-                        // Re-await a still-running invocation instead of spawning
-                        // a new one running concurrently with it
-                        var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
-                        var remaining = Math.Max(0L, currentTimeout - stopwatch.ElapsedMilliseconds);
-                        task.Wait(TimeSpan.FromMilliseconds(remaining));
 
-                        if (task.IsCompleted)
-                        {
-                            pendingTask = null;
-                            result = task.Result;
-                        }
-                        else
-                        {
-                            pendingTask = task;
-                            result = default(TResult);
-                        }
-                    }
-                    catch (AggregateException ae)
+                    // Re-await a still-running invocation instead of spawning
+                    // a new one running concurrently with it
+                    var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
+                    var remaining = Math.Max(0L, currentTimeout - stopwatch.ElapsedMilliseconds);
+                    var completed = Task.WaitAny(new Task[] { task }, TimeSpan.FromMilliseconds(remaining)) == 0;
+
+                    if (completed)
                     {
                         pendingTask = null;
-                        throw ae.InnerExceptions[0];
+
+                        // Unlike task.Result, GetResult rethrows a condition's exception
+                        // unwrapped and with its original stack trace preserved
+                        result = task.GetAwaiter().GetResult();
+                    }
+                    else
+                    {
+                        pendingTask = task;
+                        result = default;
                     }
 
                     // Exit condition - some non-default result
