@@ -90,7 +90,7 @@ Assert.AreEqual(4, result);
 ```
 
 Custom exit condition
-_(Default one - result is not null)_
+_(Default one - result is not `default` value of its type, e.g. not `null` for reference types, not `0` for `int`, not `false` for `bool`)_
 
 ```c#
 var counter = 0;
