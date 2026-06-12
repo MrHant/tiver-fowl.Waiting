@@ -116,6 +116,13 @@
         }
 
         [Test]
+        public static void WaitTimeoutExceptionProvidesStandardConstructors()
+        {
+            ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(Type.EmptyTypes));
+            ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(new[] { typeof(string) }));
+        }
+
+        [Test]
         public static void ExceptionIgnoredAndSuccess()
         {
             var mock = new Mock<ICounter>();

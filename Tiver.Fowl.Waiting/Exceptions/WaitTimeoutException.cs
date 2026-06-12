@@ -5,6 +5,15 @@
     [Serializable]
     public class WaitTimeoutException : Exception
     {
+        public WaitTimeoutException()
+        {
+        }
+
+        public WaitTimeoutException(string message)
+            : base(message)
+        {
+        }
+
         public WaitTimeoutException(string message, Exception inner)
             : base(message, inner)
         {

@@ -3,10 +3,8 @@ namespace TestsCore
     using System;
     using System.Runtime.CompilerServices;
     using NUnit.Framework;
-    using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
     using Tiver.Fowl.Waiting.Configuration;
-    using Tiver.Fowl.Waiting.Exceptions;
 
     /// <summary>
     /// Tests asserting desired behavior for known issues in Wait.
@@ -36,15 +34,6 @@ namespace TestsCore
         private static void ThrowFromHelper()
         {
             throw new InvalidOperationException("Thrown from helper");
-        }
-
-        // Issue: WaitTimeoutException lacks the standard exception constructors
-        // (parameterless and message-only).
-        [Test]
-        public static void WaitTimeoutExceptionProvidesStandardConstructors()
-        {
-            ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(Type.EmptyTypes));
-            ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(new[] { typeof(string) }));
         }
     }
 }
