@@ -95,6 +95,27 @@
 
 
         [Test]
+        public static void UnresolvableIgnoredExceptionTypeNameDoesNotHideOriginalException()
+        {
+            var config = new WaitConfiguration(500, 100)
+            {
+                IgnoredExceptionsTypeNames = new[] { "Totally.Bogus.TypeName" }
+            };
+
+            var success = false;
+            try
+            {
+                Wait.Until<bool>(() => throw new ArgumentException("original failure"), config);
+            }
+            catch (ArgumentException)
+            {
+                success = true;
+            }
+
+            ClassicAssert.IsTrue(success);
+        }
+
+        [Test]
         public static void ExceptionIgnoredAndSuccess()
         {
             var mock = new Mock<ICounter>();

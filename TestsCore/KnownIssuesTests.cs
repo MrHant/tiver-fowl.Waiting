@@ -17,21 +17,6 @@ namespace TestsCore
     [TestFixture]
     public static class KnownIssuesTests
     {
-        // Issue: an unresolvable type name in IgnoredExceptionsTypeNames produces a null
-        // entry in IgnoredExceptions, causing a NullReferenceException which hides
-        // the original exception thrown by the condition.
-        [Test]
-        public static void UnresolvableIgnoredExceptionTypeNameDoesNotHideOriginalException()
-        {
-            var config = new WaitConfiguration(500, 100)
-            {
-                IgnoredExceptionsTypeNames = new[] { "Totally.Bogus.TypeName" }
-            };
-
-            Assert.Throws<ArgumentException>(() =>
-                Wait.Until<bool>(() => throw new ArgumentException("original failure"), config));
-        }
-
         // Issue: rethrowing via "throw ae.InnerExceptions[0]" resets the stack trace,
         // losing the frames pointing to the actual failure inside the condition.
         [Test]
@@ -143,16 +128,6 @@ namespace TestsCore
         {
             ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(Type.EmptyTypes));
             ClassicAssert.IsNotNull(typeof(WaitTimeoutException).GetConstructor(new[] { typeof(string) }));
-        }
-
-        // Characterization: the default exit condition compares against default(TResult),
-        // not null - a condition returning 0 keeps polling until timeout.
-        [Test]
-        public static void DefaultValueOfValueTypeIsNotTreatedAsExitResult()
-        {
-            var config = new WaitConfiguration(500, 100);
-
-            Assert.Throws<WaitTimeoutException>(() => Wait.Until(() => 0, config));
         }
     }
 }

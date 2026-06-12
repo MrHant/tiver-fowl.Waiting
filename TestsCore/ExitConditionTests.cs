@@ -1,6 +1,5 @@
 namespace TestsCore
 {
-    using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
@@ -20,6 +19,24 @@ namespace TestsCore
             ClassicAssert.AreEqual(10, result);
         }
         
+        [Test]
+        public static void DefaultValueOfValueTypeIsNotTreatedAsExitResult()
+        {
+            var config = new WaitConfiguration(500, 100);
+
+            var success = false;
+            try
+            {
+                Wait.Until(() => 0, config);
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            ClassicAssert.IsTrue(success);
+        }
+
         [Test]
         public static void WaitUntilConditionNotReachedWithTimeout()
         {

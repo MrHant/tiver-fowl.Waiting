@@ -36,8 +36,10 @@
         {
             get
             {
-                return IgnoredExceptionsTypeNames.Select(name =>
-                    Type.GetType(name)).ToArray();;
+                return IgnoredExceptionsTypeNames
+                    .Select(name => Type.GetType(name))
+                    .Where(type => type != null)
+                    .ToArray();
             }
         }
     }
