@@ -1,5 +1,7 @@
 namespace TestsCore
 {
+    using System;
+    using System.Threading;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
     using Tiver.Fowl.Waiting;
@@ -35,6 +37,39 @@ namespace TestsCore
             }
 
             ClassicAssert.IsTrue(success);
+        }
+
+        [Test]
+        public static void BlockingConditionDoesNotReturnFabricatedDefaultToCustomExit()
+        {
+            // Regression test for issue #1.
+            // The condition blocks past the timeout, so it never produces a real
+            // result. The custom exit condition happens to accept default(int) (0).
+            // A timed-out blocking condition must surface as a WaitTimeoutException -
+            // it must NOT return the fabricated default value that the loop uses
+            // internally while the task is still pending.
+            var config = new WaitConfiguration(300, 100);
+
+            var success = false;
+            try
+            {
+                Wait.Until(
+                    () =>
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                        return 42;
+                    },
+                    result => result == 0,
+                    config);
+            }
+            catch (WaitTimeoutException)
+            {
+                success = true;
+            }
+
+            ClassicAssert.IsTrue(
+                success,
+                "Blocking condition that never completes must time out, not return a fabricated default value");
         }
 
         [Test]

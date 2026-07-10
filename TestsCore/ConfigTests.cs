@@ -35,6 +35,33 @@
         }
 
         [Test]
+        public static void IgnoredExceptionsResolvesConfiguredTypesAndFiltersUnresolvable()
+        {
+            // Characterization test for issue #4 (IgnoredExceptions re-resolves
+            // types via reflection on every read). Pins the observable contract so
+            // a future caching optimisation can be proven behaviour-preserving:
+            // valid type names resolve, unresolvable names are filtered out, and
+            // repeated reads return the same set.
+            var config = new WaitConfiguration
+            {
+                IgnoredExceptionsTypeNames = new[]
+                {
+                    typeof(ArgumentException).AssemblyQualifiedName,
+                    "Totally.Bogus.TypeName"
+                }
+            };
+
+            var first = config.IgnoredExceptions;
+            var second = config.IgnoredExceptions;
+
+            ClassicAssert.AreEqual(1, first.Length);
+            ClassicAssert.AreEqual(typeof(ArgumentException), first[0]);
+
+            ClassicAssert.AreEqual(first.Length, second.Length);
+            ClassicAssert.AreEqual(first[0], second[0]);
+        }
+
+        [Test]
         public static void MinimumConfigurationSectionFromAppConfig()
         {
             var waitConfiguration = new WaitConfiguration();

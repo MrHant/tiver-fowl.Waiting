@@ -85,13 +85,15 @@ var result = Wait.Until(() => 2 + 2, config);
 Assert.AreEqual(4, result);
 ```
 
-Extensible Wait
+Extensible Wait (NUnit only)
 
 ```c#
 var config = new WaitConfiguration(1000, 250, 5000);
 var result = Wait.Until(() => 2 + 2, config);
 Assert.AreEqual(4, result);
 ```
+
+> **Note:** This "extend on timeout" feature works only with NUnit. If you use a different test framework (MSTest, xUnit, etc.), don't enable it — the wait will throw an error instead of running.
 
 Custom exit condition
 _(Default one - result is not `default` value of its type, e.g. not `null` for reference types, not `0` for `int`, not `false` for `bool`)_
