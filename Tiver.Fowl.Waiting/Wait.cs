@@ -90,7 +90,7 @@
                     // Re-await a still-running invocation instead of spawning
                     // a new one running concurrently with it
                     var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
-                    var remaining = Math.Max(0L, currentTimeout - stopwatch.ElapsedMilliseconds);
+                    var remaining = GetRemainingMilliseconds(currentTimeout, stopwatch);
                     var completed = Task.WaitAny(new Task[] { task }, TimeSpan.FromMilliseconds(remaining)) == 0;
 
                     if (completed)
@@ -141,8 +141,12 @@
                 // Exit condition - timeout is reached
                 CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
 
-                // No exit conditions met - Sleep for polling interval
-                Thread.Sleep(configuration.PollingInterval);
+                // No exit conditions met - sleep until the next poll without
+                // exceeding the overall timeout budget
+                var sleepDuration = Math.Min(
+                    configuration.PollingInterval,
+                    GetRemainingMilliseconds(currentTimeout, stopwatch));
+                Thread.Sleep((int)sleepDuration);
             }
         }
 
@@ -168,7 +172,12 @@
         private static bool IsTimeoutReached(int timeout, Stopwatch stopwatch)
         {
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            return elapsedMilliseconds > timeout;
+            return elapsedMilliseconds >= timeout;
+        }
+
+        private static long GetRemainingMilliseconds(int timeout, Stopwatch stopwatch)
+        {
+            return Math.Max(0L, timeout - stopwatch.ElapsedMilliseconds);
         }
 
         private static bool NeedToBeExtended(int timeout, Stopwatch stopwatch)

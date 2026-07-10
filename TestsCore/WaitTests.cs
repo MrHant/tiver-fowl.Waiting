@@ -83,15 +83,14 @@
         }
 
         [Test]
-        public static void TimeoutCheckPreventsExtraInvocationAfterPollingOvershoot()
+        public static void PollingIntervalDoesNotOvershootTimeoutOrCauseExtraInvocation()
         {
-            // Characterization test for issue #5 (duplicated extend/timeout checks).
-            // PollingInterval deliberately exceeds Timeout: after the first failing
-            // poll the loop sleeps past the timeout, so the top-of-loop timeout check
-            // must throw BEFORE invoking the condition again. If that check is removed
-            // during cleanup, the condition would be invoked a second time.
+            // PollingInterval deliberately exceeds Timeout. The sleep must be capped
+            // to the remaining timeout budget, and the top-of-loop timeout check must
+            // throw before invoking the condition again.
             var invocations = 0;
-            var config = new WaitConfiguration(200, 500);
+            var config = new WaitConfiguration(200, 2000);
+            var stopwatch = Stopwatch.StartNew();
 
             var success = false;
             try
@@ -106,9 +105,11 @@
             {
                 success = true;
             }
+            stopwatch.Stop();
 
             ClassicAssert.IsTrue(success);
             ClassicAssert.AreEqual(1, invocations);
+            ClassicAssert.Less(stopwatch.ElapsedMilliseconds, 1000);
         }
 
         [Test]
