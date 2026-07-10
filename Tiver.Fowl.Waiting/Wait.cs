@@ -87,8 +87,6 @@
 
                 try
                 {
-                    TResult result;
-
                     // Re-await a still-running invocation instead of spawning
                     // a new one running concurrently with it
                     var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
@@ -101,23 +99,24 @@
 
                         // Unlike task.Result, GetResult rethrows a condition's exception
                         // unwrapped and with its original stack trace preserved
-                        result = task.GetAwaiter().GetResult();
+                        var result = task.GetAwaiter().GetResult();
+
+                        // Exit condition - some non-default result
+                        // Evaluated only for an actually produced result - a still-pending
+                        // invocation must not surface a fabricated default value
+                        if (exitCondition.Invoke(result))
+                        {
+                            using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
+                            {
+                                _logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
+                            }
+
+                            return result;
+                        }
                     }
                     else
                     {
                         pendingTask = task;
-                        result = default;
-                    }
-
-                    // Exit condition - some non-default result
-                    if (exitCondition.Invoke(result))
-                    {
-                        using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
-                        {
-                            _logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
-                        }
-
-                        return result;
                     }
                 }
                 catch (Exception ex)
