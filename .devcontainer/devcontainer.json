@@ -7,8 +7,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:latest": {
-			"version": "10.0",
-			"additionalVersions": "9.0"
+			"version": "10.0"
 		},
 		"ghcr.io/devcontainers/features/node:1.6.3": {}
 	},
