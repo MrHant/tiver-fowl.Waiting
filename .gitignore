@@ -6,6 +6,8 @@
 
 # Agents
 .claude/plans/
+.claude/settings.local.json
+.codex/config.toml
 
 # dotnet
 dotnet/
