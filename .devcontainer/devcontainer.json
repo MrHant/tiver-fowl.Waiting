@@ -7,7 +7,9 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:latest": {
-			"version": "10.0"
+			"version": "10.0",
+			// Runtime only - runs the net8.0 test leg that covers the netstandard2.0 asset
+			"dotnetRuntimeVersions": "8.0"
 		},
 		"ghcr.io/devcontainers/features/node:1.6.3": {}
 	},

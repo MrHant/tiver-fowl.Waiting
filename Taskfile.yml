@@ -17,14 +17,20 @@ tasks:
       - dotnet build Tiver.Fowl.Waiting.sln
 
   test-core:
-    desc: Run the NUnit suite (AGENTS.md)
+    desc: Run the NUnit suite on every test framework (AGENTS.md)
     cmds:
       - dotnet test TestsCore/TestsCore.csproj
 
   test-mstest:
-    desc: Run the MSTest suite (AGENTS.md)
+    desc: Run the MSTest suite on every test framework (AGENTS.md)
     cmds:
       - dotnet test TestsCoreMsTest/TestsCoreMsTest.csproj
+
+  test-netstandard:
+    desc: Run both suites against the netstandard2.0 asset only (via the net8.0 leg)
+    cmds:
+      - dotnet test TestsCore/TestsCore.csproj -f net8.0
+      - dotnet test TestsCoreMsTest/TestsCoreMsTest.csproj -f net8.0
 
   tests:
     desc: Run the full test suite (NUnit + MSTest)

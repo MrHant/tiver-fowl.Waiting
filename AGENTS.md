@@ -10,12 +10,17 @@ Run via [Task](https://taskfile.dev) (see `Taskfile.yml`; installed automaticall
 - `task test-core` – execute the NUnit suite, producing TRX logs compatible with the CI workflow.
 - `task test-mstest` – run the MSTest variants that exercise the same scenarios with a different runner.
 - `task tests` – run both suites above.
+- `task test-netstandard` – run both suites against the `netstandard2.0` asset only.
 - `task pack` – create the NuGet package; tags handled by MinVer set the version.
 
 ## Coding Style & Naming Conventions
 Target C# 10 with four-space indentation, braces on new lines, and PascalCase for public members. Mirror existing namespace layout (`Tiver.Fowl.Waiting.*`) and keep async-agnostic APIs synchronous unless a feature truly benefits from `Task`. Match file names to contained types (e.g., `WaitConfiguration.cs`).
 
 ## Testing Guidelines
+Both test projects multi-target `net8.0;net10.0`. This is deliberate: the library ships `netstandard2.0` and `net10.0`, and a project reference resolves the *best compatible* asset — so the `net10.0` leg exercises the `net10.0` build while the `net8.0` leg exercises the `netstandard2.0` build that .NET Framework and older .NET consumers actually get. Keep the `net8.0` leg when adding target frameworks, otherwise `netstandard2.0` ships untested. Running the `net8.0` leg locally needs the .NET 8 runtime (installed by the devcontainer via `dotnetRuntimeVersions`).
+
+Several tests assert poll counts inside a wall-clock window (`AboutTenTimesPolled`, `UntilWithActionFailing`, `PollingIntervalDoesNotOvershootTimeoutOrCauseExtraInvocation`). Polls can only be lost under CPU contention, never gained, so these fail intermittently on low-core machines. Take a failure there as a scheduling artifact until reproduced on an idle machine.
+
 Favor NUnit for new coverage unless you must validate behavior that differs between runners. Name fixtures `*Tests.cs`, keeping helper stubs in `TestBuilder.cs` style files. Use `Tiver_config.json` to exercise configuration-driven behavior and ensure polling/timeout values remain small to keep the suite under a few seconds. Maintain deterministic tests—avoid sleeps outside the wait abstraction.
 
 ## Commit & Pull Request Guidelines
