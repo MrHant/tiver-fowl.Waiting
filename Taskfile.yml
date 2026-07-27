@@ -41,6 +41,9 @@ tasks:
     desc: 'Tag a version and push it, starting a pre-release or finalizing a release (VERSIONING.md) — usage: task tag VERSION=1.1.0-alpha.0 (pre-release) or task tag VERSION=1.1.0 (release)'
     requires:
       vars: [VERSION]
+    preconditions:
+      - sh: test -z "$(git status --porcelain)"
+        msg: Uncommitted changes present — commit or stash before tagging.
     prompt: Tag {{.VERSION}} and push it to origin?
     cmds:
       - git tag {{.VERSION}}
