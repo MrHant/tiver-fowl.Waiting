@@ -1,0 +1,47 @@
+version: "3"
+
+tasks:
+  default:
+    desc: List available tasks
+    cmd: task --list
+    silent: true
+
+  restore:
+    desc: Fetch solution dependencies (AGENTS.md)
+    cmds:
+      - dotnet restore
+
+  build:
+    desc: Compile the library for all target frameworks (AGENTS.md)
+    cmds:
+      - dotnet build Tiver.Fowl.Waiting.sln
+
+  test-core:
+    desc: Run the NUnit suite (AGENTS.md)
+    cmds:
+      - dotnet test TestsCore/TestsCore.csproj
+
+  test-mstest:
+    desc: Run the MSTest suite (AGENTS.md)
+    cmds:
+      - dotnet test TestsCoreMsTest/TestsCoreMsTest.csproj
+
+  tests:
+    desc: Run the full test suite (NUnit + MSTest)
+    cmds:
+      - task: test-core
+      - task: test-mstest
+
+  pack:
+    desc: Create the NuGet package; version set by MinVer from git tags (AGENTS.md)
+    cmds:
+      - dotnet pack Tiver.Fowl.Waiting/Tiver.Fowl.Waiting.csproj -c Release
+
+  tag:
+    desc: 'Tag a version and push it, starting a pre-release or finalizing a release (VERSIONING.md) — usage: task tag VERSION=1.1.0-alpha.0 (pre-release) or task tag VERSION=1.1.0 (release)'
+    requires:
+      vars: [VERSION]
+    prompt: Tag {{.VERSION}} and push it to origin?
+    cmds:
+      - git tag {{.VERSION}}
+      - git push --tags

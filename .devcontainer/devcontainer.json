@@ -19,7 +19,7 @@
 	//		}
 	// }
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bash .devcontainer/setup-agents.sh && dotnet restore",
+	"postCreateCommand": "bash .devcontainer/setup-task.sh && bash .devcontainer/setup-agents.sh && dotnet restore",
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.

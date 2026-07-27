@@ -18,8 +18,7 @@ It's based on tags and commit history
 Add tag of pre-release version
 
 ```
-git tag 1.1.0-alpha.0
-git push --tags
+task tag VERSION=1.1.0-alpha.0
 ```
 
 ## How to finalize version
@@ -27,6 +26,5 @@ git push --tags
 On master or develop branch - add tag of needed version
 
 ```
-git tag 1.1.0
-git push --tags
+task tag VERSION=1.1.0
 ```
