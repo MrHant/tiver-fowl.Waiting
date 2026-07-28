@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using Fakes;
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
@@ -37,19 +38,24 @@
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
+            var timer = new VirtualWaitTimer();
 
             var success = false;
-            try
+            using (FakeTime.Use(timer))
             {
-                Wait.Until(() => mock.Object.GetCount() == 10, new WaitConfiguration(typeof(ArgumentException)));
-            }
-            catch (WaitTimeoutException)
-            {
-                success = true;
+                try
+                {
+                    Wait.Until(() => mock.Object.GetCount() == 10, new WaitConfiguration(typeof(ArgumentException)));
+                }
+                catch (WaitTimeoutException)
+                {
+                    success = true;
+                }
             }
 
             ClassicAssert.IsTrue(success);
-            mock.Verify(x => x.GetCount(), Times.AtLeastOnce);
+            ClassicAssert.AreEqual(1000, timer.ElapsedMilliseconds);
+            mock.Verify(x => x.GetCount(), Times.Exactly(4));
         }
 
         [Test]
@@ -57,15 +63,19 @@
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
+            var timer = new VirtualWaitTimer();
 
             var success = false;
-            try
+            using (FakeTime.Use(timer))
             {
-                Wait.Until(() => mock.Object.GetCount() == 10, new WaitConfiguration(typeof(ArgumentException)));
-            }
-            catch (WaitTimeoutException)
-            {
-                success = true;
+                try
+                {
+                    Wait.Until(() => mock.Object.GetCount() == 10, new WaitConfiguration(typeof(ArgumentException)));
+                }
+                catch (WaitTimeoutException)
+                {
+                    success = true;
+                }
             }
 
             ClassicAssert.IsTrue(success);
@@ -77,17 +87,21 @@
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.GetCount()).Returns(() => throw new ArgumentException());
+            var timer = new VirtualWaitTimer();
 
             var success = false;
-            try
+            using (FakeTime.Use(timer))
             {
-                Wait.Until(
-                    () => mock.Object.GetCount() == 10, 
-                    new WaitConfiguration(1000, 250, typeof(ArgumentException)));
-            }
-            catch (WaitTimeoutException)
-            {
-                success = true;
+                try
+                {
+                    Wait.Until(
+                        () => mock.Object.GetCount() == 10,
+                        new WaitConfiguration(1000, 250, typeof(ArgumentException)));
+                }
+                catch (WaitTimeoutException)
+                {
+                    success = true;
+                }
             }
 
             ClassicAssert.IsTrue(success);
@@ -149,23 +163,28 @@
         public static void LastIgnoredExceptionAvailableAsInnerException()
         {
             var invocations = 0;
+            var timer = new VirtualWaitTimer();
             var config = new WaitConfiguration(500, 100, typeof(ArgumentException));
 
             WaitTimeoutException caught = null;
-            try
+            using (FakeTime.Use(timer))
             {
-                Wait.Until<bool>(() =>
+                try
                 {
-                    var invocation = ++invocations;
-                    throw new ArgumentException($"failure #{invocation}");
-                }, config);
-            }
-            catch (WaitTimeoutException ex)
-            {
-                caught = ex;
+                    Wait.Until<bool>(() =>
+                    {
+                        var invocation = ++invocations;
+                        throw new ArgumentException($"failure #{invocation}");
+                    }, config);
+                }
+                catch (WaitTimeoutException ex)
+                {
+                    caught = ex;
+                }
             }
 
             ClassicAssert.IsNotNull(caught);
+            ClassicAssert.AreEqual(5, invocations);
             ClassicAssert.IsInstanceOf<ArgumentException>(caught.InnerException);
             ClassicAssert.AreEqual($"failure #{invocations}", caught.InnerException.Message);
         }
@@ -176,13 +195,16 @@
             var config = new WaitConfiguration(500, 100);
 
             WaitTimeoutException caught = null;
-            try
+            using (FakeTime.Use(new VirtualWaitTimer()))
             {
-                Wait.Until(() => false, config);
-            }
-            catch (WaitTimeoutException ex)
-            {
-                caught = ex;
+                try
+                {
+                    Wait.Until(() => false, config);
+                }
+                catch (WaitTimeoutException ex)
+                {
+                    caught = ex;
+                }
             }
 
             ClassicAssert.IsNotNull(caught);
@@ -205,7 +227,11 @@
                 .Throws<ArgumentException>()
                 .Returns(3);
 
-            var wait = Wait.Until(() => mock.Object.GetCount() == 3, new WaitConfiguration(typeof(ArgumentException)));
+            bool wait;
+            using (FakeTime.Use(new VirtualWaitTimer()))
+            {
+                wait = Wait.Until(() => mock.Object.GetCount() == 3, new WaitConfiguration(typeof(ArgumentException)));
+            }
 
             ClassicAssert.IsTrue(wait);
             mock.Verify(x => x.GetCount(), Times.Exactly(3));

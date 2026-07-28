@@ -1,6 +1,7 @@
 namespace TestsCore
 {
     using System;
+    using Fakes;
     using Moq;
     using NUnit.Framework;
     using NUnit.Framework.Legacy;
@@ -27,19 +28,26 @@ namespace TestsCore
         {
             var mock = new Mock<ICounter>();
             mock.Setup(foo => foo.Tick()).Throws<ArgumentException>().Verifiable();
+            var timer = new VirtualWaitTimer();
 
+            // Default configuration - Timeout 1000, PollingInterval 250 - so the
+            // ignored exception is swallowed on ticks at 0, 250, 500 and 750.
             var success = false;
-            try
+            using (FakeTime.Use(timer))
             {
-                Wait.Until(() => mock.Object.Tick(), new WaitConfiguration(typeof(ArgumentException)));
-            }
-            catch (WaitTimeoutException)
-            {
-                success = true;
+                try
+                {
+                    Wait.Until(() => mock.Object.Tick(), new WaitConfiguration(typeof(ArgumentException)));
+                }
+                catch (WaitTimeoutException)
+                {
+                    success = true;
+                }
             }
 
             ClassicAssert.IsTrue(success);
-            mock.Verify(x => x.Tick(), Times.AtLeast(3));
+            ClassicAssert.AreEqual(1000, timer.ElapsedMilliseconds);
+            mock.Verify(x => x.Tick(), Times.Exactly(4));
         }
     }
 }
