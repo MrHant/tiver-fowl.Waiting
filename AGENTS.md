@@ -48,6 +48,17 @@ Favor NUnit for new coverage unless you must validate behavior that differs betw
 ## Comment Guidelines
 Do not comment on reasoning for change, instead explain what the code is doing and why if it's a necessary context not obvious from the code itself.
 
+## Changelog
+`CHANGELOG.md` is the consumer-facing record of what changed, kept in loosely following style: a `## [Unreleased]` section on top, then one section per released version, newest first, each grouped into `### Added`, `### Changed`, `### Fixed` and `### Removed` (only the groups that apply, in that order). Sections carry no dates — the Git tag is the release record.
+
+Update `[Unreleased]` in the same commit that makes the change, never as a follow-up:
+- Write entries for what a consumer of the NuGet package observes — public API, behavior of the wait loop, configuration, target frameworks, dependencies. Name public types and members in backticks.
+- Prefix anything that can break a consumer's build or change behavior they rely on with `**BREAKING**:`.
+- Leave out internal-only churn (CI wiring, devcontainer, editor settings, test refactors, formatting). Mention it only when it changes what ships — a new target framework or a dropped dependency does, a workflow rename does not.
+- Use a sub-bullet list under an entry when one change has several facets worth spelling out; otherwise keep it to a single line.
+
+Changes from Unreleased to specific release version would be done manually, do not edit it yourself. Do not edit any historical data in the CHANGELOG.md file.
+
 ## Commit & Pull Request Guidelines
 Follow the existing short, imperative commit style (e.g., “Update devcontainer”). Reference issues in the body when applicable, and group related edits per commit to ease release tagging. 
 
