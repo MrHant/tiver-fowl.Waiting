@@ -2,15 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Configuration;
     using Exceptions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
+    using Timing;
 
     public static class Wait
     {
@@ -66,7 +65,7 @@
         public static TResult Until<TResult>(Func<TResult> condition, Func<TResult, bool> exitCondition, WaitConfiguration configuration)
         {
             // Start continious checking
-            var stopwatch = Stopwatch.StartNew();
+            var timer = WaitTimerContext.CreateTimer();
             Exception lastException = null;
             var wasExtended = false;
             var currentTimeout = configuration.Timeout;
@@ -75,7 +74,7 @@
             while (true)
             {
                 // Extend timeout if needed
-                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
+                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, timer))
                 {
                     currentTimeout = configuration.ExtendedTimeout;
                     wasExtended = true;
@@ -83,15 +82,15 @@
                 }
 
                 // Exit condition - timeout is reached
-                CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
+                CheckTimeoutReached(currentTimeout, timer, lastException, wasExtended);
 
                 try
                 {
                     // Re-await a still-running invocation instead of spawning
                     // a new one running concurrently with it
                     var task = pendingTask ?? Task.Factory.StartNew(condition.Invoke);
-                    var remaining = GetRemainingMilliseconds(currentTimeout, stopwatch);
-                    var completed = Task.WaitAny(new Task[] { task }, TimeSpan.FromMilliseconds(remaining)) == 0;
+                    var remaining = GetRemainingMilliseconds(currentTimeout, timer);
+                    var completed = timer.WaitForTask(task, TimeSpan.FromMilliseconds(remaining));
 
                     if (completed)
                     {
@@ -108,7 +107,7 @@
                         {
                             using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                             {
-                                _logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", stopwatch.ElapsedMilliseconds);
+                                _logger.Log(LogLevel.Debug, "Waiting completed in {ms}ms", timer.ElapsedMilliseconds);
                             }
 
                             return result;
@@ -131,7 +130,7 @@
                 }
 
                 // Extend timeout if needed
-                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, stopwatch))
+                if (configuration.ExtendOnTimeout && !wasExtended && NeedToBeExtended(currentTimeout, timer))
                 {
                     currentTimeout = configuration.ExtendedTimeout;
                     wasExtended = true;
@@ -139,27 +138,27 @@
                 }
 
                 // Exit condition - timeout is reached
-                CheckTimeoutReached(currentTimeout, stopwatch, lastException, wasExtended);
+                CheckTimeoutReached(currentTimeout, timer, lastException, wasExtended);
 
                 // No exit conditions met - sleep until the next poll without
                 // exceeding the overall timeout budget
                 var sleepDuration = Math.Min(
                     configuration.PollingInterval,
-                    GetRemainingMilliseconds(currentTimeout, stopwatch));
-                Thread.Sleep((int)sleepDuration);
+                    GetRemainingMilliseconds(currentTimeout, timer));
+                timer.Sleep((int)sleepDuration);
             }
         }
 
-        private static void CheckTimeoutReached(int timeout, Stopwatch stopwatch, Exception lastException, bool wasExtended)
+        private static void CheckTimeoutReached(int timeout, IWaitTimer timer, Exception lastException, bool wasExtended)
         {
-            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            if (IsTimeoutReached(timeout, stopwatch))
+            var elapsedMilliseconds = timer.ElapsedMilliseconds;
+            if (IsTimeoutReached(timeout, timer))
             {
                 using (_logger.BeginScope(new Dictionary<string, object> { {"LogType", "Wait" } }))
                 {
                     _logger.Log(LogLevel.Debug, "Waiting failed after {ms}ms", elapsedMilliseconds);
                 }
-                stopwatch.Stop();
+                timer.Stop();
 
                 var waitName = wasExtended ? "Extended Wait" : "Wait";
 
@@ -169,25 +168,25 @@
             }
         }
 
-        private static bool IsTimeoutReached(int timeout, Stopwatch stopwatch)
+        private static bool IsTimeoutReached(int timeout, IWaitTimer timer)
         {
-            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            var elapsedMilliseconds = timer.ElapsedMilliseconds;
             return elapsedMilliseconds >= timeout;
         }
 
-        private static long GetRemainingMilliseconds(int timeout, Stopwatch stopwatch)
+        private static long GetRemainingMilliseconds(int timeout, IWaitTimer timer)
         {
-            return Math.Max(0L, timeout - stopwatch.ElapsedMilliseconds);
+            return Math.Max(0L, timeout - timer.ElapsedMilliseconds);
         }
 
-        private static bool NeedToBeExtended(int timeout, Stopwatch stopwatch)
+        private static bool NeedToBeExtended(int timeout, IWaitTimer timer)
         {
             if (!NUnitReferenced)
             {
                 throw new InvalidOperationException("NUnit Framework must be referenced to use Extend On Timeout feature.");
             }
 
-            return IsTimeoutReached(timeout, stopwatch);
+            return IsTimeoutReached(timeout, timer);
         }
 
         private static void WarnTimeoutWasExtended()
