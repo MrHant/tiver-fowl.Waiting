@@ -19,7 +19,29 @@ Target C# 10 with four-space indentation, braces on new lines, and PascalCase fo
 ## Testing Guidelines
 Both test projects multi-target `net8.0;net10.0`. This is deliberate: the library ships `netstandard2.0` and `net10.0`, and a project reference resolves the *best compatible* asset — so the `net10.0` leg exercises the `net10.0` build while the `net8.0` leg exercises the `netstandard2.0` build that .NET Framework and older .NET consumers actually get. Keep the `net8.0` leg when adding target frameworks, otherwise `netstandard2.0` ships untested. Running the `net8.0` leg locally needs the .NET 8 runtime (installed by the devcontainer via `dotnetRuntimeVersions`).
 
-Several tests assert poll counts inside a wall-clock window (`AboutTenTimesPolled`, `UntilWithActionFailing`, `PollingIntervalDoesNotOvershootTimeoutOrCauseExtraInvocation`). Polls can only be lost under CPU contention, never gained, so these fail intermittently on low-core machines. Take a failure there as a scheduling artifact until reproduced on an idle machine.
+### Fake time
+
+Timing-sensitive tests run on a virtual clock instead of the wall clock, so poll counts and elapsed times are exact rather than windowed. The library exposes an internal seam — `Tiver.Fowl.Waiting/Timing/IWaitTimer.cs` covers all four time-dependent operations of the wait loop (elapsed, stop, sleep, bounded task wait), and `WaitTimerContext` swaps the implementation through an `AsyncLocal`, which keeps parallel fixtures isolated. Production always gets `StopwatchWaitTimer`; tests reach the seam via the existing `[assembly: InternalsVisibleTo("TestsCore")]`.
+
+Write a timing test with `TestsCore/Fakes/`:
+
+```csharp
+var timer = new VirtualWaitTimer();
+using (FakeTime.Use(timer))
+{
+    // Wait.Until(...) - runs on virtual time
+}
+ClassicAssert.AreEqual(1000, timer.ElapsedMilliseconds);
+```
+
+Conventions:
+- One `VirtualWaitTimer` per `Wait.Until` call, and always inside a `using` scope — a leaked override would follow an NUnit worker thread into unrelated tests.
+- Virtual time advances only on polling sleeps and on timeouts expiring; running a condition is free. A condition that must consume time blocks on a `VirtualGate` from `timer.CreateGate(dueMs)` (opens itself at that virtual time) or `timer.CreateGate()` (only the test opens it).
+- **Never** `Thread.Sleep` inside a condition under `FakeTime` — the fake cannot tell a sleeping condition from a hung one and fails the test after a 30 s liveness grace. Use `gate.Park()`.
+- Open a never-opening gate in a `finally`, otherwise its thread pool thread stays parked.
+- Assert exact numbers. A window assertion under fake time is a sign the test is really a real-time test.
+
+`RealTimeSmokeTests` deliberately stays on the wall clock to cover `StopwatchWaitTimer` end to end, and uses generous bounds only (at least the timeout, well under 30 s). **TestsCoreMsTest** also stays on real time, doubling as smoke coverage of the `netstandard2.0` asset. Put anything needing an exact count or duration in a fake-time test instead.
 
 Favor NUnit for new coverage unless you must validate behavior that differs between runners. Name fixtures `*Tests.cs`, keeping helper stubs in `TestBuilder.cs` style files. Use `Tiver_config.json` to exercise configuration-driven behavior and ensure polling/timeout values remain small to keep the suite under a few seconds. Maintain deterministic tests—avoid sleeps outside the wait abstraction.
 
