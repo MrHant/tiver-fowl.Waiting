@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.0]
 
 ### Added
 - Internal timing seam in the new `Tiver.Fowl.Waiting.Timing` namespace, covering all four time-dependent operations of the wait loop
