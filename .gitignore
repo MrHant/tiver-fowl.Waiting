@@ -18,6 +18,9 @@ tools/*
 
 # Assembly info changes
 **/AssemblyInfo.cs
+# Specifically include file with InternalsVisibleTo that lets TestsCore reach 
+# the internal timing seam. Without it the test project does not compile.
+!Tiver.Fowl.Waiting/Properties/AssemblyInfo.cs
 
 # User-specific files
 *.suo

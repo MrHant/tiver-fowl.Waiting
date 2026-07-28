@@ -31,7 +31,7 @@ jobs:
             10.0.x
 
       - name: Run tests - net10.0 and net8.0 (netstandard2.0 asset)
-        run: dotnet test -c Release -v quiet -m:1
+        run: dotnet test -c Release -v quiet
 
       - name: Pack NuGet package
         run: dotnet pack --configuration Release --output ${{ env.OutputDirectory }}
