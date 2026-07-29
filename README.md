@@ -68,6 +68,27 @@ var zero = 0;
 var wait = Wait.Until(() => 2 / zero, new WaitConfiguration(typeof(DivideByZeroException)));
 ```
 
+If the Wait completes successfully, ignored exceptions are discarded — only on timeout is the last of them reported, as the `InnerException` of the `WaitTimeoutException`
+
+### Type Names Must Be Resolvable
+
+Names configured through `IgnoredExceptionsTypeNames` are resolved with `Type.GetType`. **A name that cannot be resolved is skipped silently** — there is no error and no log entry. The exception it was meant to cover is then not ignored, and it propagates out of `Wait.Until` on the very first attempt.
+
+`Type.GetType` finds unqualified names only for types in the .NET base library. Every other type — from a test framework, a third-party package, or your own project — needs an assembly-qualified name:
+
+```json
+{
+  "Tiver.Fowl.Waiting": {
+    "IgnoredExceptionsTypeNames": [
+      "System.ArgumentException",
+      "NUnit.Framework.AssertionException, NUnit.Framework",
+      "OpenQA.Selenium.StaleElementReferenceException, Selenium.WebDriver"
+      "MyApp.Infrastructure.TransientException, MyApp"
+    ]
+  }
+}
+```
+
 ## Samples
 
 Simple Wait (use `Tiver_config.json` values or defaults)
